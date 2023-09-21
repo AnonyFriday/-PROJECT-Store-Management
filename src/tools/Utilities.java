@@ -61,12 +61,11 @@ public abstract class Utilities {
      * @param invalidMsgs: invalid messages
      * @return true or false based on pattern configured on the for the input string
      */
-    public static boolean readBoolean(String prompt,
-	    String[] invalidMsgs) {
+    public static boolean readBoolean(String prompt, String[] invalidMsgs) {
 
-	Boolean result;
+	Boolean result = null;
 	do {
-	    System.out.print("\n" + prompt + ": ");
+	    System.out.print("\n[!]" + prompt + ": ");
 	    result = parseBoolean(sc.nextLine());
 
 	    // If the Boolean object is null, print out to the console and try again
@@ -76,6 +75,7 @@ public abstract class Utilities {
 		}
 	    }
 
+	    // looping until result has value
 	} while (result == null);
 
 	return result;
@@ -90,7 +90,6 @@ public abstract class Utilities {
      * <br><br>For example with 7------2//////////2023 --> 7-2-2023
      *
      * @param dateStr: input date string
-     * @param sep: the separator for the formated date
      * @return new string
      */
     public static String normalizeDateStr(String dateStr) {
@@ -101,12 +100,12 @@ public abstract class Utilities {
 	// Second regex: 7--2///2033 => 7-2-2023 (replace all in-between special escape characters)
 	String result = dateStr
 		.replaceAll("\\s+", "")
-		.replaceAll("[!@#$%^&*()_./-]+", Constants.DATE_DELIMITER);
+		.replaceAll("[^0-9]+", Constants.DATE_DELIMITER);
 	return result;
     }
 
     /**
-     * Parse Date based on
+     * Parse Date based on from String-typed Date
      *
      * @param inputStr
      * @param dateFormat
@@ -127,7 +126,7 @@ public abstract class Utilities {
 	try {
 	    return formatter.parse(inputStr);
 	} catch (ParseException ex) {
-	    System.err.println(ex);
+	    System.err.println(ex.getMessage());
 	}
 	return null; // Return error if parsing date unsuccessful
     }

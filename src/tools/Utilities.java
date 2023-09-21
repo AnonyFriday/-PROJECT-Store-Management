@@ -36,22 +36,22 @@ public abstract class Utilities {
      */
     public static Boolean parseBoolean(String input) {
 
-	Boolean value;
+	Boolean value = null;
 
 	// Match only 1 character: t,1,f or true at the beginning of the string
 	String regexTrueValue = "^([t1y]{1})|^(true)";
 	String regexFalseValue = "^([f0n]{1})|^(false)";
 
-	// Return true | false if match each group of the given pattern
+	// Presanitize the input string
 	input = input.trim().toLowerCase();
 	if (input.matches(regexTrueValue)) {
-	    return true;
+	    value = true;
 	} else if (input.matches(regexFalseValue)) {
-	    return false;
+	    value = false;
 	}
 
 	// Return the null value if not matching with the boolean pattern
-	return null;
+	return value;
     }
 
     /**

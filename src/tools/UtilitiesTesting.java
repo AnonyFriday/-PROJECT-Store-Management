@@ -12,5 +12,8 @@ public class UtilitiesTesting {
 
     public static void main(String[] args) {
 	System.out.println(Utilities.normalizeDateStr("7$@##$!@!$@@@-9-  2000"));
+	
+	System.out.println(Utilities.parseDateFromString("12-12-", Constants.DATE_FORMAT));
+    
     }
 }

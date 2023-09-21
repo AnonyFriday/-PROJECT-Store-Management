@@ -4,6 +4,7 @@
  */
 package tools;
 
+import java.lang.System.Logger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -90,7 +91,7 @@ public abstract class Utilities {
      * <br><br>For example with 7------2//////////2023 --> 7-2-2023
      *
      * @param dateStr: input date string
-     * @return new string
+     * @return new formatted string-typed date
      */
     public static String normalizeDateStr(String dateStr) {
 
@@ -107,9 +108,9 @@ public abstract class Utilities {
     /**
      * Parse Date based on from String-typed Date
      *
-     * @param inputStr
-     * @param dateFormat
-     * @return
+     * @param inputStr: string-typed Date
+     * @param dateFormat: a format for date
+     * @return a date-typed Date from string-type Date
      */
     public static Date parseDateFromString(String inputStr,
 	    String dateFormat) {
@@ -126,7 +127,12 @@ public abstract class Utilities {
 	try {
 	    return formatter.parse(inputStr);
 	} catch (ParseException ex) {
-	    System.err.println(ex.getMessage());
+
+	    // Extract the method name
+	    String methodName = new Object() {
+	    }.getClass().getEnclosingMethod().getName();
+
+	    System.err.println(methodName + " " + ex.getMessage());
 	}
 	return null; // Return error if parsing date unsuccessful
     }
@@ -134,12 +140,11 @@ public abstract class Utilities {
     /**
      * Parsing a String format from the Date Object
      *
-     * @param date
-     * @param dateFormat
-     * @return
+     * @param date: a date object
+     * @param dateFormat: a format of date object
+     * @return a string-typed date from the data object
      */
-    public static String parseStringFromDate(Date date,
-	    String dateFormat) {
+    public static String parseStringFromDate(Date date, String dateFormat) {
 	// If null than return empty string
 	if (date == null) {
 	    return "";
@@ -155,9 +160,9 @@ public abstract class Utilities {
     /**
      * Extract the part of date by using Calendar package
      *
-     * @param date
-     * @param calendarPart
-     * @return
+     * @param date: a date object
+     * @param calendarPart: a part of time need extracting
+     * @return a value of extracted date's part
      */
     public static int getDatePart(Date date,
 	    int calendarPart) {
@@ -183,10 +188,10 @@ public abstract class Utilities {
      *
      * <br>Available Date format: dd-MM-yyyy, yyyy-MM-dd,
      *
-     * @param prompt: will be printted before inputting
-     * @param invalidMsgs: output messages to console incase of invalid input
+     * @param prompt: will be printed before inputting
+     * @param invalidMsgs: output messages to console in case of invalid input
      * @param dateFormat: input a date format
-     * @param isSkippable: return null immediately if user donot enter any values
+     * @param isSkippable: return null immediately if user do not enter any values
      * @return a date object based on the input string
      */
     public static Date readDate(String prompt,
@@ -195,27 +200,26 @@ public abstract class Utilities {
 	    boolean isSkippable) {
 
 	Date date = null;
-	String inputStr;
+	String inputStr = null;
 	do {
-	    System.out.print("\n" + prompt + ": ");
+	    System.out.print("\n[!]" + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
+
+	    // If skippable is enabled then return the null immediately
+	    if (inputStr.isEmpty() && isSkippable) {
+		return null;
+	    }
 
 	    // Assign the date object created from the parsing function 
 	    date = parseDateFromString(inputStr, dateFormat);
 
-	    // If skippable is enabled and date == null, then break the loop immediately
-	    if (date == null && isSkippable) {
-		break;
-	    }
-
 	    // Output the msg if the date is valid
-	    {
-		if (date == null && invalidMsgs.length > 0) {
-		    for (String message : invalidMsgs) {
-			System.out.println(message);
-		    }
+	    if (date == null && invalidMsgs.length > 0) {
+		for (String message : invalidMsgs) {
+		    System.out.println(message);
 		}
 	    }
+
 	} while (date == null);
 
 	return date;
@@ -224,27 +228,35 @@ public abstract class Utilities {
     /**
      * Read Date Before the given date
      *
-     *
      * @param prompt: prompting the date to return
-     * @param invalidMsgs: output messages to console incase of invalid input
+     * @param invalidMsgs: output messages to console in case of invalid input
      * @param dateFormat: date format
      * @param markerDate: the given date
+     * @param isSkippable: support skipping value if enables
      * @return the date before the given date
      */
     public static Date readDateBefore(String prompt,
 	    String[] invalidMsgs,
 	    String dateFormat,
-	    Date markerDate) {
+	    Date markerDate, boolean isSkippable) {
+
 	Date dateBefore = null;
 	String inputStr = null;
 	boolean isValidDateBefore = false;
 
 	do {
 	    // Input the date before the marker date
-	    System.out.print("\n" + prompt + ": ");
+	    System.out.print("\n[!]" + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
+
+	    // Return null if user enter nothing and skippable is enable
+	    if (inputStr.isEmpty() && isSkippable) {
+		return null;
+	    }
+
+	    // Check if the date is not null and before the given date
 	    dateBefore = parseDateFromString(inputStr, dateFormat);
-	    isValidDateBefore = (dateBefore != null) && dateBefore.before(markerDate);
+	    isValidDateBefore = (dateBefore != null) && dateBefore.before(dateBefore);
 
 	    // Output the msg if the date is valid
 	    if (!isValidDateBefore && invalidMsgs.length > 0) {
@@ -261,27 +273,36 @@ public abstract class Utilities {
      * Read Date after the given date
      *
      * @param prompt: prompting the date to return
-     * @param invalidMsgs: output messages to console incase of invalid input
+     * @param invalidMsgs: output messages to console in case of invalid input
      * @param dateFormat: date format
      * @param markerDate: the given date
+     * @param isSkippable: support skipping value if enables
      * @return the date after the given date
      */
     public static Date readDateAfter(String prompt,
 	    String[] invalidMsgs,
 	    String dateFormat,
-	    Date markerDate) {
+	    Date markerDate,
+	    boolean isSkippable) {
+
 	Date dateAfter = null;
 	String inputStr = null;
 	boolean isValidDateAfter = false;
 
 	do {
 	    // Input the date after the marker date
-	    System.out.print("\n" + prompt + ": ");
+	    System.out.print("\n[!]" + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
-	    dateAfter = parseDateFromString(inputStr, dateFormat);
+
+	    // Return null if user enter nothing and skippable is enable
+	    if (inputStr.isEmpty() && isSkippable) {
+		return null;
+	    }
 
 	    // Print notice msg if not matching the pattern and having invalid messages   
+	    dateAfter = parseDateFromString(inputStr, dateFormat);
 	    isValidDateAfter = (dateAfter != null) && dateAfter.after(markerDate);
+
 	    if (!isValidDateAfter && invalidMsgs.length > 0) {
 		for (String message : invalidMsgs) {
 		    System.out.println(message);
@@ -316,8 +337,8 @@ public abstract class Utilities {
 	    inputStr = sc.nextLine().trim();
 
 	    // Break the loop immediately if the skippable is enable and user enter empty character
-	    if (inputStr.isBlank() && isSkippable) {
-		break;
+	    if (inputStr.isEmpty() && isSkippable) {
+		return null;
 	    }
 
 	    // Comparing the input and the pattern

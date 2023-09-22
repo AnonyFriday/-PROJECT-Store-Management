@@ -4,28 +4,30 @@
  */
 package purchasingmng.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 
 /**
  * A purchase receipt contains purchased product
  *
  * @author duyvu
  */
-public class PurchaseReceipt extends HashSet implements Comparable<PurchaseReceipt> {
+public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
 
     // ======================================
     // = ATTRIBUTES
     // ======================================
-    private String prID;
     private Date purchaseDate;
+
+    private String prID;
+    private static int trackingID = 0;
 
     // ======================================
     // = CONSTRUCTORS
     // ======================================
     // Parameterized Constructor
     public PurchaseReceipt(String prID, Date purchaseDate) {
-	this.prID = prID;
+	this.prID = calculatePrID();
 	this.purchaseDate = purchaseDate;
     }
 
@@ -43,15 +45,21 @@ public class PurchaseReceipt extends HashSet implements Comparable<PurchaseRecei
 	return o.getPrID().compareTo(this.prID);
     }
 
+    /**
+     * Calculate automatically PrID
+     *
+     * @return a format string IMxxxxxx of the PrID
+     */
+    private String calculatePrID() {
+	// Set for increment index ith
+	return String.format("IM%07d", trackingID++);
+    }
+
     // ======================================
     // = GETTERS & SETTERS
     // ======================================
     public String getPrID() {
 	return prID;
-    }
-
-    public void setPrID(String prID) {
-	this.prID = prID;
     }
 
     public Date getPurchaseDate() {

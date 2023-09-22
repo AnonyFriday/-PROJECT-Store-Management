@@ -39,14 +39,13 @@ public abstract class Constants {
     }
 
     // In format and specific Condition Message
-    public static final String MUST_IN_CONDITIONS_MSG(String subject,
-	    String... conditions) {
+    public static final String MUST_IN_CONDITIONS_MSG(String... conditions) {
 
-	String str = subject + " has to follow those conditions: ";
+	String str = "Only accept values that: ";
 	int L = conditions.length;
 
 	for (int i = 0; i < L; i++) {
-	    str = str.concat("\n\t- " + conditions[i] + ".");
+	    str = str.concat("\n\t[*] " + conditions[i] + ".");
 	}
 
 	// If there is no condition, then return ""

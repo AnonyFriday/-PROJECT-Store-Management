@@ -5,12 +5,14 @@
 package purchasingmng.entities;
 
 import java.util.Date;
+import java.util.HashSet;
 
 /**
+ * A purchase receipt contains purchased product
  *
  * @author duyvu
  */
-public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
+public class PurchaseReceipt extends HashSet implements Comparable<PurchaseReceipt> {
 
     // ======================================
     // = ATTRIBUTES
@@ -59,5 +61,4 @@ public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
     public void setPurchaseDate(Date purchaseDate) {
 	this.purchaseDate = purchaseDate;
     }
-
 }

@@ -54,10 +54,10 @@ public abstract class Utilities {
      * Reading the boolean pattern from the input string
      *
      * @param prompt: A prompt to input a string
-     * @param invalidMsgs: invalid messages
+     * @param invalidMsg: invalid messages
      * @return true or false based on pattern configured on the for the input string
      */
-    public static boolean readBoolean(String prompt, String[] invalidMsgs) {
+    public static boolean readBoolean(String prompt, String invalidMsg) {
 
 	Boolean result = null;
 	do {
@@ -65,10 +65,8 @@ public abstract class Utilities {
 	    result = parseBoolean(sc.nextLine());
 
 	    // If the Boolean object is null, print out to the console and try again
-	    if (result == null && invalidMsgs.length > 0) {
-		for (String message : invalidMsgs) {
-		    System.out.println(message);
-		}
+	    if (result == null && invalidMsg.length() > 0) {
+		System.out.println(invalidMsg);
 	    }
 
 	    // looping until result has value
@@ -197,7 +195,7 @@ public abstract class Utilities {
 	Date date = null;
 	String inputStr = null;
 	do {
-	    System.out.print("\n[!]" + prompt + ": ");
+	    System.out.print("\n[!] " + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
 
 	    // If skippable is enabled then return the null immediately
@@ -239,7 +237,7 @@ public abstract class Utilities {
 
 	do {
 	    // Input the date before the marker date
-	    System.out.print("\n[!]" + prompt + ": ");
+	    System.out.print("\n[!] " + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
 
 	    // Return null if user enter nothing and skippable is enable
@@ -282,7 +280,7 @@ public abstract class Utilities {
 
 	do {
 	    // Input the date after the marker date
-	    System.out.print("\n[!]" + prompt + ": ");
+	    System.out.print("\n[!] " + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
 
 	    // Return null if user enter nothing and skippable is enable
@@ -322,7 +320,7 @@ public abstract class Utilities {
 	String inputStr = null;
 	boolean isMatched = false;
 	do {
-	    System.out.print("\n" + prompt + ": ");
+	    System.out.print("\n[!] " + prompt + ": ");
 	    inputStr = sc.nextLine().trim();
 
 	    // Break the loop immediately if the skippable is enable and user enter empty character

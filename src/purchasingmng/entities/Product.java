@@ -34,10 +34,6 @@ public class Product implements Comparable<Product> {
     // ======================================
     // = CONSTRUCTOR
     // ======================================	
-    public Product() {
-
-    }
-
     // ID Only Constructor
     public Product(String pID) {
 	this.pID = pID;
@@ -70,13 +66,8 @@ public class Product implements Comparable<Product> {
      * @return a string-typed PID
      */
     private String calculatePID() {
-	if (trackingID == 0) {
-	    // Set for index 0th
-	    return String.format("P%06d", trackingID++);
-	} else {
-	    // Set for increment index ith
-	    return String.format("P%06d", ++trackingID);
-	}
+	// Set for increment index ith
+	return String.format("P%06d", trackingID++);
     }
 
     /**
@@ -183,14 +174,4 @@ public class Product implements Comparable<Product> {
     public void setPrID(String prID) {
 	this.prID = prID;
     }
-
-    public static void main(String[] args) {
-	Product product = new Product();
-
-	// Testing ID
-	System.out.println(product.calculatePID());
-	System.out.println(product.calculatePID());
-	System.out.println(product.calculatePID());
-    }
-
 }

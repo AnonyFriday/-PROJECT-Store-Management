@@ -184,13 +184,13 @@ public abstract class Utilities {
      * <br>Available Date format: dd-MM-yyyy, yyyy-MM-dd,
      *
      * @param prompt: will be printed before inputting
-     * @param invalidMsgs: output messages to console in case of invalid input
+     * @param invalidMsg: output messages to console in case of invalid input
      * @param dateFormat: input a date format
      * @param isSkippable: return null immediately if user do not enter any values
      * @return a date object based on the input string
      */
     public static Date readDate(String prompt,
-	    String[] invalidMsgs,
+	    String invalidMsg,
 	    String dateFormat,
 	    boolean isSkippable) {
 
@@ -208,11 +208,9 @@ public abstract class Utilities {
 	    // Assign the date object created from the parsing function 
 	    date = parseDateFromString(inputStr, dateFormat);
 
-	    // Output the msg if the date is valid
-	    if (date == null && invalidMsgs.length > 0) {
-		for (String message : invalidMsgs) {
-		    System.out.println(message);
-		}
+	    // Output the msg if the date is invalid
+	    if (date == null && invalidMsg.length() > 0) {
+		System.out.println(invalidMsg);
 	    }
 
 	} while (date == null);
@@ -224,14 +222,14 @@ public abstract class Utilities {
      * Read Date Before the given date
      *
      * @param prompt: prompting the date to return
-     * @param invalidMsgs: output messages to console in case of invalid input
+     * @param invalidMsg: output messages to console in case of invalid input
      * @param dateFormat: date format
      * @param markerDate: the given date
      * @param isSkippable: support skipping value if enables
      * @return the date before the given date
      */
     public static Date readDateBefore(String prompt,
-	    String[] invalidMsgs,
+	    String invalidMsg,
 	    String dateFormat,
 	    Date markerDate, boolean isSkippable) {
 
@@ -254,10 +252,8 @@ public abstract class Utilities {
 	    isValidDateBefore = (dateBefore != null) && dateBefore.before(dateBefore);
 
 	    // Output the msg if the date is valid
-	    if (!isValidDateBefore && invalidMsgs.length > 0) {
-		for (String message : invalidMsgs) {
-		    System.out.println(message);
-		}
+	    if (!isValidDateBefore && invalidMsg.length() > 0) {
+		System.out.println(invalidMsg);
 	    }
 	} while (!isValidDateBefore);
 
@@ -268,14 +264,14 @@ public abstract class Utilities {
      * Read Date after the given date
      *
      * @param prompt: prompting the date to return
-     * @param invalidMsgs: output messages to console in case of invalid input
+     * @param invalidMsg: output messages to console in case of invalid input
      * @param dateFormat: date format
      * @param markerDate: the given date
      * @param isSkippable: support skipping value if enables
      * @return the date after the given date
      */
     public static Date readDateAfter(String prompt,
-	    String[] invalidMsgs,
+	    String invalidMsg,
 	    String dateFormat,
 	    Date markerDate,
 	    boolean isSkippable) {
@@ -298,10 +294,8 @@ public abstract class Utilities {
 	    dateAfter = parseDateFromString(inputStr, dateFormat);
 	    isValidDateAfter = (dateAfter != null) && dateAfter.after(markerDate);
 
-	    if (!isValidDateAfter && invalidMsgs.length > 0) {
-		for (String message : invalidMsgs) {
-		    System.out.println(message);
-		}
+	    if (!isValidDateAfter && invalidMsg.length() > 0) {
+		System.out.println(invalidMsg);
 	    }
 	} while (!isValidDateAfter);
 
@@ -315,13 +309,13 @@ public abstract class Utilities {
      * Read a String using the pre-define pattern
      *
      * @param prompt: prompting user msg
-     * @param invalidMsgs:invalid messages for specific input type
+     * @param invalidMsg:invalid messages for specific input type
      * @param strFormat: regular expression to match the string format
      * @param isSkippable: determine if the user skip the input and return null to set a default value
      * @return null value if skippable or a new value
      */
     public static String readString(String prompt,
-	    String[] invalidMsgs,
+	    String invalidMsg,
 	    String strFormat,
 	    boolean isSkippable) {
 
@@ -340,11 +334,10 @@ public abstract class Utilities {
 	    isMatched = inputStr.matches(strFormat);
 
 	    // Print notice msg if not matching the pattern and having invalid messages         
-	    if (!isMatched && invalidMsgs.length > 0) {
-		for (String message : invalidMsgs) {
-		    System.out.println(message);
-		}
+	    if (!isMatched && invalidMsg.length() > 0) {
+		System.out.println(invalidMsg);
 	    }
+
 	} while (!isMatched);
 
 	return inputStr;

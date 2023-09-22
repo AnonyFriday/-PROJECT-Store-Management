@@ -35,8 +35,8 @@ public abstract class Utilities {
 	Boolean value = null;
 
 	// Match only 1 character: t,1,f or true at the beginning of the string
-	String regexTrueValue = "^([t1y]{1})|^(true)";
-	String regexFalseValue = "^([f0n]{1})|^(false)";
+	String regexTrueValue = "^([t1y]{1}|true|yes)$";
+	String regexFalseValue = "^([f0n]{1}|false|no)$";
 
 	// Presanitize the input string
 	input = input.trim().toLowerCase();

@@ -40,8 +40,8 @@ public class Product implements Comparable<Product> {
     }
 
     // Full Parameterize Constructor
-    public Product(String name, double purchasePrice, short initialQuantity,
-	    short curQuantity, Date productionDate, Date expirationDate,
+    public Product(String name, double purchasePrice, int initialQuantity,
+	    int curQuantity, Date productionDate, Date expirationDate,
 	    boolean continuous, String prID) {
 	this.name = name;
 	this.purchasePrice = purchasePrice;

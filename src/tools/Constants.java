@@ -45,7 +45,7 @@ public abstract class Constants {
 	int L = conditions.length;
 
 	for (int i = 0; i < L; i++) {
-	    str = str.concat("\n\t[*] " + conditions[i] + ".");
+	    str = str.concat("\n\t* " + conditions[i] + ".");
 	}
 
 	// If there is no condition, then return ""

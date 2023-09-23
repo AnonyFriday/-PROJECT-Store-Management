@@ -4,7 +4,7 @@
  */
 package tools;
 
-import javax.print.attribute.HashAttributeSet;
+import java.util.function.BiConsumer;
 
 /**
  * A common verifier function for some specific case
@@ -16,33 +16,30 @@ public abstract class Verifier {
     /**
      *
      * @param value: supplied value
-     * @param target: a target to be compared
-     * @return true if greater than, or false
+     * @return true if positive than, or false
      */
-    public final static boolean isGreaterThan(int value,
-                                              int target) {
-        return value > target;
+    public final static boolean isPositive(int value) {
+        return value > 0;
+    }
+    public final static boolean isPositive(double value) {
+        return value > 0.0;
     }
 
     /**
      *
      * @param value: supplied value
-     * @param target: a target to be compared
-     * @return true if less than, or false
+     * @return true if negative than, or false
      */
-    public final static boolean isLessThan(int value,
-                                           int target) {
-        return value < target;
+    public final static boolean isNegative(int value) {
+        return value < 0;
     }
 
     /**
      *
      * @param value: supplied value
-     * @param target: a target to be compared
-     * @return true if both are equals, or false
+     * @return true if greater than or equals to 0, or false
      */
-    public final static boolean isEqualsTo(int value,
-                                           int target) {
-        return value == target;
+    public final static boolean isGreaterThanEqualsToZero(int value) {
+        return value >= 0;
     }
 }

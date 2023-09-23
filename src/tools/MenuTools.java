@@ -66,7 +66,7 @@ public class MenuTools {
      * @param continueFunction: a function to be executed next
      * @param prompt: a prompt to continue the function
      */
-    public static void continueOption(Supplier continueFunction,
+    public static void continueOption(Runnable continueFunction,
 	    String prompt) {
 
 	// Assign a list of valid error message if user input the wrong type of boolean
@@ -75,7 +75,7 @@ public class MenuTools {
 	// If true, then continue the function by applying the Functional Interface
 	boolean isContinued = GeneralTools.readBoolean(prompt, invalidBooleanMsg);
 	while (isContinued) {
-	    continueFunction.get();
+	    continueFunction.run();
 	    isContinued = GeneralTools.readBoolean(prompt, invalidBooleanMsg);
 	}
     }

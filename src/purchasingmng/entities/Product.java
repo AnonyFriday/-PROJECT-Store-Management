@@ -5,6 +5,13 @@
 package purchasingmng.entities;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import tools.Constants;
+import tools.input.InputDateTools;
+import tools.input.InputStringTools;
 
 /**
  *
@@ -13,7 +20,7 @@ import java.util.Date;
 public class Product implements Comparable<Product> {
 
     // ======================================
-    // = ATTRIBUTES
+    // = Attributes
     // ======================================
     // Variables
     private String name;
@@ -29,34 +36,43 @@ public class Product implements Comparable<Product> {
 
     // Static Variables
     private static int trackingID = 0;
-    private String pID;
+    private final String pID;
 
     // ======================================
-    // = CONSTRUCTOR
-    // ======================================	
+    // = Constructor
+    // ======================================
     // ID Only Constructor
     public Product(String pID) {
-	this.pID = pID;
+        this.pID = pID;
     }
 
     // Full Parameterize Constructor
-    public Product(String name, double purchasePrice, int initialQuantity,
-	    int curQuantity, Date productionDate, Date expirationDate,
-	    boolean continuous, String prID) {
-	this.name = name;
-	this.purchasePrice = purchasePrice;
-	this.initialQuantity = initialQuantity;
-	this.curQuantity = curQuantity;
-	this.productionDate = productionDate;
-	this.expirationDate = expirationDate;
-	this.continuous = continuous;
+    public Product(String name,
+                   double purchasePrice,
+                   int initialQuantity,
+                   Date productionDate,
+                   Date expirationDate,
+                   String prID) {
+        this.name = name;
+        this.purchasePrice = purchasePrice;
+        this.initialQuantity = initialQuantity;
 
-	this.pID = calculatePID();
-	this.prID = prID;
+        // By default, current quantity equals to initial quantity (Derived Attribute)
+        // - Does not create set function, it will automatically update based on export quantity 
+        // and initial quantity
+        this.curQuantity = initialQuantity;
+        this.productionDate = productionDate;
+        this.expirationDate = expirationDate;
+
+        // If curr quantity is 0 then discontinue the product (Derived Attribute)
+        this.continuous = this.curQuantity == 0 ? false : true;
+
+        this.pID = calculatePID();
+        this.prID = prID;
     }
 
     // ======================================
-    // = METHODS
+    // = Class-related Methods
     // ======================================
     /**
      * Automatically increase and retrieve the the PID as a string
@@ -66,20 +82,70 @@ public class Product implements Comparable<Product> {
      * @return a string-typed PID
      */
     private String calculatePID() {
-	// Set for increment index ith
-	return String.format("P%06d", trackingID++);
+        // Set for increment index ith
+        return String.format("P%06d", trackingID++);
     }
 
     /**
      * Override the toString() function to output product's fields
+     * <br><br>(Used for writing to a text file for better performance)
      *
-     * @return a product-formatted representative string
+     * @return a product's representative string
      */
     @Override
     public String toString() {
-	return String.format("%s,  %s,  %.4f,  %d,  %d,  %s,  %s,  %b,  %s",
-		pID, name, purchasePrice, initialQuantity,
-		curQuantity, productionDate, expirationDate, continuous, prID);
+        return String.format("%s,%s,%f,%d,%d,%s,%s,%b,%s",
+                             pID, name, purchasePrice, initialQuantity,
+                             curQuantity,
+                             InputDateTools.parseStringFromDate(productionDate, Constants.DATE_FORMAT),
+                             InputDateTools.parseStringFromDate(expirationDate, Constants.DATE_FORMAT),
+                             continuous, prID);
+    }
+
+    /**
+     * Drawing a formatted table to represent all attribute of each product
+     * <br><br>(Used for writing to a text file for better performance)
+     *
+     * @return a product-formatted representative table
+     */
+    public void displayProductWithFormat() {
+        Constants.DRAWING_LINE_WITH_CONTENT(77, () -> {
+                                        System.out.println(String.format(
+                                                "| Product ID    " +
+                                                "| Name              " +
+                                                "| Purchase Price " +
+                                                "| Initial Q. " +
+                                                "| Current Q. |"
+                                        ));
+
+                                        System.out.println(String.format("| %-13s " +
+                                                                         "| %-17s " +
+                                                                         "| %-14.2f " +
+                                                                         "| %-10d " +
+                                                                         "| %-10d |", pID, name, purchasePrice, initialQuantity,
+                                                                         curQuantity
+                                        ));
+
+                                        Constants.DRAWING_TABLE_EDGE_LINE(77);
+
+                                        System.out.println(String.format(
+                                                "| Production D. " +
+                                                "| Expiry D.         " +
+                                                "| Is Con.        " +
+                                                "| Import ID  " +
+                                                "| %10s |", " "));
+
+                                        System.out.println(String.format(
+                                                "| %-13s " +
+                                                "| %-17s " +
+                                                "| %-14b " +
+                                                "| %-10s " +
+                                                "| %10s |",
+                                                InputDateTools.parseStringFromDate(productionDate, Constants.DATE_FORMAT),
+                                                InputDateTools.parseStringFromDate(expirationDate, Constants.DATE_FORMAT),
+                                                continuous, prID, " "));
+                                    }
+        );
     }
 
     /**
@@ -90,7 +156,7 @@ public class Product implements Comparable<Product> {
      */
     @Override
     public boolean equals(Object obj) {
-	return this.getPID().equals(((Product) obj).getPID());
+        return this.getPID().equals(((Product) obj).getPID());
     }
 
     /**
@@ -101,77 +167,84 @@ public class Product implements Comparable<Product> {
      */
     @Override
     public int compareTo(Product o) {
-	return this.getPID().compareTo(o.getPID());
+        return this.getPID().compareTo(o.getPID());
     }
 
     // ======================================
-    // = SETTERS & GETTERS
+    // = Getters & Setters Methods
     // ======================================
     public String getPID() {
-	return String.format("P06%d", pID);
+        return pID;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public double getPurchasePrice() {
-	return purchasePrice;
+        return purchasePrice;
     }
 
     public void setPurchasePrice(double purchasePrice) {
-	this.purchasePrice = purchasePrice;
+        this.purchasePrice = purchasePrice;
     }
 
     public int getInitialQuantity() {
-	return initialQuantity;
+        return initialQuantity;
     }
 
     public void setInitialQuantity(int initialQuantity) {
-	this.initialQuantity = initialQuantity;
+        this.initialQuantity = initialQuantity;
     }
 
     public int getCurQuantity() {
-	return curQuantity;
+        return curQuantity;
     }
 
     public void setCurQuantity(int curQuantity) {
-	this.curQuantity = curQuantity;
+        this.curQuantity = curQuantity;
     }
 
     public Date getProductionDate() {
-	return productionDate;
+        return productionDate;
     }
 
     public void setProductionDate(Date productionDate) {
-	this.productionDate = productionDate;
+        this.productionDate = productionDate;
     }
 
     public Date getExpirationDate() {
-	return expirationDate;
+        return expirationDate;
     }
 
     public void setExpirationDate(Date expirationDate) {
-	this.expirationDate = expirationDate;
+        this.expirationDate = expirationDate;
     }
 
     public boolean isContinuous() {
-	return continuous;
+        return continuous;
     }
 
-    public void setContinuous(boolean continuous) {
-	this.continuous = continuous;
+    /**
+     * The continuity depends on the current quantity
+     *
+     * <br><br>If the current == 0, then the product is inactive, otherwise return true
+     *
+     * @param currentQuantity: current quantity of the product
+     */
+    public void setContinuous(int currentQuantity) {
+        this.continuous = currentQuantity == 0 ? false : true;
     }
 
     public String getPrID() {
-	return prID;
+        return prID;
     }
 
     public void setPrID(String prID) {
-	this.prID = prID;
+        this.prID = prID;
     }
 }

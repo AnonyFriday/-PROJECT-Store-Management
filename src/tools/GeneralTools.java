@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.function.Function;
 
 /**
  * Common tools in Application
@@ -32,22 +33,22 @@ public abstract class GeneralTools {
      */
     public static Boolean parseBoolean(String input) {
 
-	Boolean value = null;
+        Boolean value = null;
 
-	// Match only 1 character: t,1,f or true at the beginning of the string
-	String regexTrueValue = "^([t1y]{1}|true|yes)$";
-	String regexFalseValue = "^([f0n]{1}|false|no)$";
+        // Match only 1 character: t,1,f or true at the beginning of the string
+        String regexTrueValue = "^([t1y]{1}|true|yes)$";
+        String regexFalseValue = "^([f0n]{1}|false|no)$";
 
-	// Presanitize the input string
-	input = input.trim().toLowerCase();
-	if (input.matches(regexTrueValue)) {
-	    value = true;
-	} else if (input.matches(regexFalseValue)) {
-	    value = false;
-	}
+        // Presanitize the input string
+        input = input.trim().toLowerCase();
+        if (input.matches(regexTrueValue)) {
+            value = true;
+        } else if (input.matches(regexFalseValue)) {
+            value = false;
+        }
 
-	// Return the null value if not matching with the boolean pattern
-	return value;
+        // Return the null value if not matching with the boolean pattern
+        return value;
     }
 
     /**
@@ -57,22 +58,23 @@ public abstract class GeneralTools {
      * @param invalidMsg: invalid messages
      * @return true or false based on pattern configured on the for the input string
      */
-    public static boolean readBoolean(String prompt, String invalidMsg) {
+    public static boolean readBoolean(String prompt,
+                                      StringBuilder invalidMsg) {
 
-	Boolean result = null;
-	do {
-	    System.out.print("\n[!]" + prompt + ": ");
-	    result = parseBoolean(sc.nextLine());
+        Boolean result = null;
+        do {
+            System.out.print("\n[!]" + prompt + ": ");
+            result = parseBoolean(sc.nextLine());
 
-	    // If the Boolean object is null, print out to the console and try again
-	    if (result == null && invalidMsg.length() > 0) {
-		System.out.println(invalidMsg);
-	    }
+            // If the Boolean object is null, print out to the console and try again
+            if (result == null && invalidMsg.length() > 0) {
+                System.out.println(invalidMsg);
+            }
 
-	    // looping until result has value
-	} while (result == null);
+            // looping until result has value
+        } while (result == null);
 
-	return result;
+        return result;
     }
 
     // ======================================
@@ -88,14 +90,14 @@ public abstract class GeneralTools {
      */
     public static String normalizeDateStr(String dateStr) {
 
-	// Chaining the replaceAll to format the date string
-	// ** Special character followed by .<character> => ./**
-	// First regex: 7   --  2 /// 2033 => 7--2///2023 (replace all in-between spaces)
-	// Second regex: 7--2///2033 => 7-2-2023 (replace all in-between special escape characters)
-	String result = dateStr
-		.replaceAll("\\s+", "")
-		.replaceAll("[^0-9]+", Constants.DATE_DELIMITER);
-	return result;
+        // Chaining the replaceAll to format the date string
+        // ** Special character followed by .<character> => ./**
+        // First regex: 7   --  2 /// 2033 => 7--2///2023 (replace all in-between spaces)
+        // Second regex: 7--2///2033 => 7-2-2023 (replace all in-between special escape characters)
+        String result = dateStr
+                .replaceAll("\\s+", "")
+                .replaceAll("[^0-9]+", Constants.DATE_DELIMITER);
+        return result;
     }
 
     /**
@@ -106,28 +108,28 @@ public abstract class GeneralTools {
      * @return a date-typed Date from string-type Date
      */
     public static Date parseDateFromString(String inputStr,
-	    String dateFormat) {
+                                           String dateFormat) {
 
-	// Format the input string to 2-3-2022
-	inputStr = normalizeDateStr(inputStr);
-	DateFormat formatter = new SimpleDateFormat(dateFormat);
+        // Format the input string to 2-3-2022
+        inputStr = normalizeDateStr(inputStr);
+        DateFormat formatter = new SimpleDateFormat(dateFormat);
 
-	// Set lenient to force the strict rule apply on natural calendar 
-	// e.g. 31/2 => error
-	formatter.setLenient(false);
+        // Set lenient to force the strict rule apply on natural calendar 
+        // e.g. 31/2 => error
+        formatter.setLenient(false);
 
-	// Formatting the given 2-3-2023 to the specific format date
-	try {
-	    return formatter.parse(inputStr);
-	} catch (ParseException ex) {
+        // Formatting the given 2-3-2023 to the specific format date
+        try {
+            return formatter.parse(inputStr);
+        } catch (ParseException ex) {
 
-	    // Extract the method name
-	    String methodName = new Object() {
-	    }.getClass().getEnclosingMethod().getName();
+            // Extract the method name
+            String methodName = new Object() {
+            }.getClass().getEnclosingMethod().getName();
 
-	    System.err.println(methodName + " " + ex.getMessage());
-	}
-	return null; // Return error if parsing date unsuccessful
+            System.err.println(methodName + " " + ex.getMessage());
+        }
+        return null; // Return error if parsing date unsuccessful
     }
 
     /**
@@ -137,17 +139,18 @@ public abstract class GeneralTools {
      * @param dateFormat: a format of date object
      * @return a string-typed date from the data object
      */
-    public static String parseStringFromDate(Date date, String dateFormat) {
-	// If null than return empty string
-	if (date == null) {
-	    return "";
-	}
+    public static String parseStringFromDate(Date date,
+                                             String dateFormat) {
+        // If null than return empty string
+        if (date == null) {
+            return "";
+        }
 
-	// Create the formatter with the given dateFormat
-	DateFormat formatter = new SimpleDateFormat(dateFormat);
+        // Create the formatter with the given dateFormat
+        DateFormat formatter = new SimpleDateFormat(dateFormat);
 
-	// return the format of dateString based on the dateObject
-	return formatter.format(date);
+        // return the format of dateString based on the dateObject
+        return formatter.format(date);
     }
 
     /**
@@ -158,22 +161,22 @@ public abstract class GeneralTools {
      * @return a value of extracted date's part
      */
     public static int getDatePart(Date date,
-	    int calendarPart) {
+                                  int calendarPart) {
 
-	// Determine the calendar by creating the object GregorianCalendar
-	Calendar calendar = new GregorianCalendar(Locale.ENGLISH);
-	calendar.setTime(date);
+        // Determine the calendar by creating the object GregorianCalendar
+        Calendar calendar = new GregorianCalendar(Locale.ENGLISH);
+        calendar.setTime(date);
 
-	// Set Lenient to false to force the strict rule on natural calendar
-	calendar.setLenient(false);
+        // Set Lenient to false to force the strict rule on natural calendar
+        calendar.setLenient(false);
 
-	// Handling the 0th-index of the first month if extracting month
-	if (calendarPart == Calendar.MONTH) {
-	    return calendar.get(calendarPart) + 1;
-	}
+        // Handling the 0th-index of the first month if extracting month
+        if (calendarPart == Calendar.MONTH) {
+            return calendar.get(calendarPart) + 1;
+        }
 
-	// Other Calendar parts
-	return calendar.get(calendarPart);
+        // Other Calendar parts
+        return calendar.get(calendarPart);
     }
 
     /**
@@ -188,32 +191,32 @@ public abstract class GeneralTools {
      * @return a date object based on the input string
      */
     public static Date readDate(String prompt,
-	    String invalidMsg,
-	    String dateFormat,
-	    boolean isSkippable) {
+                                StringBuilder invalidMsg,
+                                String dateFormat,
+                                boolean isSkippable) {
 
-	Date date = null;
-	String inputStr = null;
-	do {
-	    System.out.print("\n[!] " + prompt + ": ");
-	    inputStr = sc.nextLine().trim();
+        Date date = null;
+        String inputStr = null;
+        do {
+            System.out.print("\n[!] " + prompt + ": ");
+            inputStr = sc.nextLine().trim();
 
-	    // If skippable is enabled then return the null immediately
-	    if (inputStr.isEmpty() && isSkippable) {
-		return null;
-	    }
+            // If skippable is enabled then return the null immediately
+            if (inputStr.isEmpty() && isSkippable) {
+                return null;
+            }
 
-	    // Assign the date object created from the parsing function 
-	    date = parseDateFromString(inputStr, dateFormat);
+            // Assign the date object created from the parsing function 
+            date = parseDateFromString(inputStr, dateFormat);
 
-	    // Output the msg if the date is invalid
-	    if (date == null && invalidMsg.length() > 0) {
-		System.out.println(invalidMsg);
-	    }
+            // Output the msg if the date is invalid
+            if (date == null && invalidMsg.length() > 0) {
+                System.out.println(invalidMsg);
+            }
 
-	} while (date == null);
+        } while (date == null);
 
-	return date;
+        return date;
     }
 
     /**
@@ -227,35 +230,36 @@ public abstract class GeneralTools {
      * @return the date before the given date
      */
     public static Date readDateBefore(String prompt,
-	    String invalidMsg,
-	    String dateFormat,
-	    Date markerDate, boolean isSkippable) {
+                                      StringBuilder invalidMsg,
+                                      String dateFormat,
+                                      Date markerDate,
+                                      boolean isSkippable) {
 
-	Date dateBefore = null;
-	String inputStr = null;
-	boolean isValidDateBefore = false;
+        Date dateBefore = null;
+        String inputStr = null;
+        boolean isValidDateBefore = false;
 
-	do {
-	    // Input the date before the marker date
-	    System.out.print("\n[!] " + prompt + ": ");
-	    inputStr = sc.nextLine().trim();
+        do {
+            // Input the date before the marker date
+            System.out.print("\n[!] " + prompt + ": ");
+            inputStr = sc.nextLine().trim();
 
-	    // Return null if user enter nothing and skippable is enable
-	    if (inputStr.isEmpty() && isSkippable) {
-		return null;
-	    }
+            // Return null if user enter nothing and skippable is enable
+            if (inputStr.isEmpty() && isSkippable) {
+                return null;
+            }
 
-	    // Check if the date is not null and before the given date
-	    dateBefore = parseDateFromString(inputStr, dateFormat);
-	    isValidDateBefore = (dateBefore != null) && dateBefore.before(dateBefore);
+            // Check if the date is not null and before the given date
+            dateBefore = parseDateFromString(inputStr, dateFormat);
+            isValidDateBefore = (dateBefore != null) && dateBefore.before(dateBefore);
 
-	    // Output the msg if the date is valid
-	    if (!isValidDateBefore && invalidMsg.length() > 0) {
-		System.out.println(invalidMsg);
-	    }
-	} while (!isValidDateBefore);
+            // Output the msg if the date is valid
+            if (!isValidDateBefore && invalidMsg.length() > 0) {
+                System.out.println(invalidMsg);
+            }
+        } while (!isValidDateBefore);
 
-	return dateBefore;
+        return dateBefore;
     }
 
     /**
@@ -269,35 +273,35 @@ public abstract class GeneralTools {
      * @return the date after the given date
      */
     public static Date readDateAfter(String prompt,
-	    String invalidMsg,
-	    String dateFormat,
-	    Date markerDate,
-	    boolean isSkippable) {
+                                     StringBuilder invalidMsg,
+                                     String dateFormat,
+                                     Date markerDate,
+                                     boolean isSkippable) {
 
-	Date dateAfter = null;
-	String inputStr = null;
-	boolean isValidDateAfter = false;
+        Date dateAfter = null;
+        String inputStr = null;
+        boolean isValidDateAfter = false;
 
-	do {
-	    // Input the date after the marker date
-	    System.out.print("\n[!] " + prompt + ": ");
-	    inputStr = sc.nextLine().trim();
+        do {
+            // Input the date after the marker date
+            System.out.print("\n[!] " + prompt + ": ");
+            inputStr = sc.nextLine().trim();
 
-	    // Return null if user enter nothing and skippable is enable
-	    if (inputStr.isEmpty() && isSkippable) {
-		return null;
-	    }
+            // Return null if user enter nothing and skippable is enable
+            if (inputStr.isEmpty() && isSkippable) {
+                return null;
+            }
 
-	    // Print notice msg if not matching the pattern and having invalid messages   
-	    dateAfter = parseDateFromString(inputStr, dateFormat);
-	    isValidDateAfter = (dateAfter != null) && dateAfter.after(markerDate);
+            // Print notice msg if not matching the pattern and having invalid messages   
+            dateAfter = parseDateFromString(inputStr, dateFormat);
+            isValidDateAfter = (dateAfter != null) && dateAfter.after(markerDate);
 
-	    if (!isValidDateAfter && invalidMsg.length() > 0) {
-		System.out.println(invalidMsg);
-	    }
-	} while (!isValidDateAfter);
+            if (!isValidDateAfter && invalidMsg.length() > 0) {
+                System.out.println(invalidMsg);
+            }
+        } while (!isValidDateAfter);
 
-	return dateAfter;
+        return dateAfter;
     }
 
     // ======================================
@@ -313,31 +317,61 @@ public abstract class GeneralTools {
      * @return null value if skippable or a new value
      */
     public static String readString(String prompt,
-	    String invalidMsg,
-	    String strFormat,
-	    boolean isSkippable) {
+                                    StringBuilder invalidMsg,
+                                    String strFormat,
+                                    boolean isSkippable) {
 
-	String inputStr = null;
-	boolean isMatched = false;
-	do {
-	    System.out.print("\n[!] " + prompt + ": ");
-	    inputStr = sc.nextLine().trim();
+        String inputStr = "";
+        boolean isMatched = false;
+        do {
+            System.out.print("\n[!] " + prompt + ": ");
+            inputStr = sc.nextLine().trim();
 
-	    // Break the loop immediately if the skippable is enable and user enter empty character
-	    if (inputStr.isEmpty() && isSkippable) {
-		return null;
-	    }
+            // Break the loop immediately if the skippable is enable and user enter empty character
+            if (inputStr.isEmpty() && isSkippable) {
+                break;
+            }
 
-	    // Comparing the input and the pattern
-	    isMatched = inputStr.matches(strFormat);
+            // Comparing the input and the pattern
+            isMatched = inputStr.matches(strFormat);
 
-	    // Print notice msg if not matching the pattern and having invalid messages         
-	    if (!isMatched && invalidMsg.length() > 0) {
-		System.out.println(invalidMsg);
-	    }
+            // Print notice msg if not matching the pattern and having invalid messages         
+            if (!isMatched && invalidMsg.length() > 0) {
+                System.out.println(invalidMsg.toString());
+            }
 
-	} while (!isMatched);
+        } while (!isMatched);
 
-	return inputStr;
+        return inputStr;
     }
+
+//    public static Double readDouble(String prompt,
+//                                    StringBuilder invalidMsg,
+//                                    boolean isSkippable,
+//                                    String strFormat,
+//                                    Function<Double, Boolean>... verifiers) {
+//
+//        String inputStr = "";
+//
+//        boolean isMatched = false;
+//        do {
+//            System.out.print("\n[!] " + prompt + ": ");
+//            inputStr = sc.nextLine().trim();
+//
+//            // Break the loop immediately if the skippable is enable and user enter empty character
+//            if (inputStr.isEmpty() && isSkippable) {
+//                break;
+//            }
+//
+//            // Comparing the input and the pattern
+//            isMatched = inputStr.matches(strFormat);
+//
+////            // Print notice msg if not matching the pattern and having invalid messages         
+////            if (!isMatched && invalidMsg.length() > 0) {
+////                System.out.println(invalidMsg);
+////            }
+//        } while (!isMatched);
+//
+//        return inputStr;
+//    }
 }

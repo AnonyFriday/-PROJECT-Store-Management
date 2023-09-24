@@ -12,7 +12,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.function.Function;
 import tools.Constants;
-import tools.GeneralTools;
+import tools.NumberVerifier;
+import tools.input.InputBooleanTools;
+import tools.input.InputDateTools;
+import tools.input.InputNumberTools;
+import tools.input.InputStringTools;
 import util.IProductManagement;
 
 /**
@@ -42,25 +46,21 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
         this.purchaseDate = purchaseDate;
 
         this.add(new Product("VU", 12, 12,
-                             GeneralTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             GeneralTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
-                             true, "VR1111"));
+                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                             InputDateTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
+                             "VR1111"));
         this.add(new Product("VU", 12, 12,
-                             GeneralTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             GeneralTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
-                             true, "VR1111"));
+                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                             InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                             "VR1111"));
         this.add(new Product("VU", 12, 12,
-                             GeneralTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             GeneralTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
-                             true, "VR1111"));
+                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                             InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                             "VR1111"));
         this.add(new Product("VU", 12, 12,
-                             GeneralTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             GeneralTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
-                             true, "VR1111"));
-        this.add(new Product("VU", 12, 12,
-                             GeneralTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             GeneralTools.parseDateFromString("01-9-2024", Constants.DATE_FORMAT),
-                             true, "VR1111"));
+                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                             InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                             "VR1111"));
     }
 
     // ======================================
@@ -91,80 +91,68 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
     // = Create methods
     // ======================================
     /**
-     * Add products to
+     * Add product to a receipt
      *
-     * @param noProducts
-     * @return true if no error, otherwise false
+     * @return true if added successfully, otherwise return false
      */
-    public boolean addProducts(int noProducts) {
+    public boolean addProduct() {
         String name;
         double purchasePrice;
         int initialQuantity;
         Date productionDate;
         Date expirationDate;
-        boolean continuous;
 
-        for (int noProduct = 0; noProduct < noProducts; noProduct++) {
+        // Announcing the input of product
+        Constants.DRAWING_LINE_ONE_MESSAGE("Enter new Product");
 
-            // Announcing the input of product
-            Constants.DRAWING_LINE_ONE_MESSAGE("Enter Product No." + noProduct);
-
-            // Name
-            name = GeneralTools.readString("Enter Name",
+        // Name
+        name = InputStringTools.readString("Enter Name",
                                            Constants.MUST_IN_CONDITIONS_MSG(
                                                    "Cannot be null",
                                                    "Only contains numeric, alphabets and space character",
                                                    "e.g. Lemongrass Oil 23"),
                                            "^[a-zA-Z0-9 ]+$", false);
 
-            // Purchase Price
-            purchasePrice = Double.parseDouble(GeneralTools.readString("Enter Purchase Price",
-                                                                       Constants.MUST_IN_CONDITIONS_MSG(
-                                                                               "Cannot be null",
-                                                                               "Only contains float value greater than 0",
-                                                                               "e.g. 12, 1546.4"),
-                                                                       "^\\d+\\.?\\d*$", false));
+        // Purchase Price
+        purchasePrice = InputNumberTools.readDouble("Enter Purchase Price",
+                                                    Constants.MUST_IN_CONDITIONS_MSG(
+                                                            "Cannot be null",
+                                                            "Only contains float value greater than 0",
+                                                            "e.g. 12, 1546.4"), false,
+                                                    "^\\d+\\.?\\d*$",
+                                                    (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 0.1)
+        );
 
-            // Initial Quantity
-            initialQuantity = Integer.parseInt(GeneralTools.readString("Enter Initial Quantity",
-                                                                       Constants.MUST_IN_CONDITIONS_MSG(
-                                                                               "Cannot be null",
-                                                                               "Only contains integral value greater than 0",
-                                                                               "e.g. 20, 32, 40"),
-                                                                       "^\\d+$", false));
+        // Initial Quantity
+        initialQuantity = InputNumberTools.readInteger("Enter Initial Quantity",
+                                                       Constants.MUST_IN_CONDITIONS_MSG(
+                                                               "Cannot be null",
+                                                               "Only contains integral value greater than 0",
+                                                               "e.g. 20, 32, 40"), false,
+                                                       "^\\d+$",
+                                                       (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 1.0));
 
-            // Production Date
-            productionDate = GeneralTools.readDateBefore("Enter Production Date",
-                                                         Constants.MUST_IN_CONDITIONS_MSG(
-                                                                 "Cannot be null",
-                                                                 "Production Date is before Purchase Date",
-                                                                 "e.g. 12-12-2000 (dd-MM-yyyy)"),
-                                                         Constants.DATE_FORMAT, purchaseDate, false);
+        // Production Date
+        productionDate = InputDateTools.readDateBefore("Enter Production Date",
+                                                       Constants.MUST_IN_CONDITIONS_MSG(
+                                                               "Cannot be null",
+                                                               "Production Date is before Purchase Date",
+                                                               "e.g. 12-12-2000 (dd-MM-yyyy)"),
+                                                       Constants.DATE_FORMAT, purchaseDate, false);
 
-            // Expiration Date
-            expirationDate = GeneralTools.readDateAfter("Enter Expiration Date",
-                                                        Constants.MUST_IN_CONDITIONS_MSG(
-                                                                "Cannot be null",
-                                                                "Production Date is after Purchase Date",
-                                                                "e.g. 12-12-2000 (dd-MM-yyyy)"),
-                                                        Constants.DATE_FORMAT, purchaseDate, false);
+        // Expiration Date
+        expirationDate = InputDateTools.readDateAfter("Enter Expiration Date",
+                                                      Constants.MUST_IN_CONDITIONS_MSG(
+                                                              "Cannot be null",
+                                                              "Production Date is after Purchase Date",
+                                                              "e.g. 12-12-2000 (dd-MM-yyyy)"),
+                                                      Constants.DATE_FORMAT, purchaseDate, false);
 
-            // Continuous
-            continuous = GeneralTools.readBoolean("Is Product continuously on sell (Y/N)",
-                                                  Constants.MUST_IN_CONDITIONS_MSG(
-                                                          "Cannot be null",
-                                                          "Continous propery accepts only boolean value",
-                                                          "e.g. true, false, Y, N"));
+        // Add this product into this Purchase Receipt
+        Product product = new Product(name, purchasePrice, initialQuantity, productionDate, expirationDate, prID);
 
-            // Add this product into this Purchase Receipt
-            Product product = new Product(name, purchasePrice, initialQuantity, productionDate, expirationDate, continuous, prID);
-
-            // If something wrong, return false to notice the error
-            if (!this.add(product)) {
-                return false;
-            }
-        }
-        return true;
+        // If something wrong, return false to notice the error
+        return this.add(product);
     }
 
     // ======================================
@@ -198,7 +186,7 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
     }
 
     // ======================================
-    // = Update Methods　(TODO)
+    // = Update Methods　
     // ======================================
     /**
      * Update Product based on Product's ID
@@ -222,12 +210,12 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
         String name, purchasePriceStr, initialQuantityStr;
 
         // Name
-        name = GeneralTools.readString("Update Name (Enter to unchange)",
-                                       Constants.MUST_IN_CONDITIONS_MSG(
-                                               "Only contains numeric alphabets and space character",
-                                               "Press Enter to unchange value",
-                                               "e.g. Lemongrass Oil 23"),
-                                       "^[a-zA-Z0-9 ]+$", true);
+        name = InputStringTools.readString("Update Name (Enter to unchange)",
+                                           Constants.MUST_IN_CONDITIONS_MSG(
+                                                   "Only contains numeric alphabets and space character",
+                                                   "Press Enter to unchange value",
+                                                   "e.g. Lemongrass Oil 23"),
+                                           "^[a-zA-Z0-9 ]+$", true);
         if (!name.isEmpty()) {
             product.setName(name);
         }
@@ -235,22 +223,22 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
         // ERROR
         // Purchase Price 
         // - Adding extra checking on Verifier
-        purchasePriceStr = GeneralTools.readString("Enter Purchase Price (Enter to unchange)",
-                                                   Constants.MUST_IN_CONDITIONS_MSG(
-                                                           "Only contains float value greater than 0",
-                                                           "Press Enter to unchange value",
-                                                           "e.g. 12, 1546.4"),
-                                                   "^\\d+\\.?\\d*$", true);
+        purchasePriceStr = InputStringTools.readString("Enter Purchase Price (Enter to unchange)",
+                                                       Constants.MUST_IN_CONDITIONS_MSG(
+                                                               "Only contains float value greater than 0",
+                                                               "Press Enter to unchange value",
+                                                               "e.g. 12, 1546.4"),
+                                                       "^\\d+\\.?\\d*$", true);
 
         // Initial Quantity
         // - The current quantity equals to the initial quantity automatically
         // - Adding extra checking on Verifier
-        initialQuantityStr = GeneralTools.readString("Enter Initial Quantity (Enter to unchange)",
-                                                     Constants.MUST_IN_CONDITIONS_MSG(
-                                                             "Only contains integral value greater than 0",
-                                                             "Press Enter to unchange value",
-                                                             "e.g. 20, 32, 40"),
-                                                     "^\\d+$", true);
+        initialQuantityStr = InputStringTools.readString("Enter Initial Quantity (Enter to unchange)",
+                                                         Constants.MUST_IN_CONDITIONS_MSG(
+                                                                 "Only contains integral value greater than 0",
+                                                                 "Press Enter to unchange value",
+                                                                 "e.g. 20, 32, 40"),
+                                                         "^\\d+$", true);
 
         return true;
     }
@@ -287,12 +275,12 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
     public static void main(String[] args) {
 
         // Testing Expire Early function
-        PurchaseReceipt receipt = new PurchaseReceipt(GeneralTools.parseDateFromString("22-10-2000", Constants.DATE_FORMAT));
+        PurchaseReceipt receipt = new PurchaseReceipt(InputDateTools.parseDateFromString("22-10-2000", Constants.DATE_FORMAT));
 
         receipt.displayProducts(new Function<Product, Boolean>() {
             @Override
             public Boolean apply(Product obj) {
-                int expireDay = GeneralTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
+                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
                 int currentDay = LocalDate.now().getDayOfYear();
                 boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
                                          ((expireDay - currentDay) >= 0);
@@ -306,7 +294,7 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
         receipt.displayProducts(new Function<Product, Boolean>() {
             @Override
             public Boolean apply(Product obj) {
-                int expireDay = GeneralTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
+                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
                 int currentDay = LocalDate.now().getDayOfYear();
                 boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
                                          ((expireDay - currentDay) >= 0);

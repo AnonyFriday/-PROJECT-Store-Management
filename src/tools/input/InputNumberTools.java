@@ -28,7 +28,7 @@ public class InputNumberTools {
      * @param verifiers: a list of extra verifiers for corner case (.e.g greater than 12, divisible by 12, etc.)
      * @return
      */
-    public static double readDouble(String prompt,
+    public static Double readDouble(String prompt,
                                     String invalidMsg,
                                     boolean isSkippable,
                                     String strFormat,
@@ -45,7 +45,7 @@ public class InputNumberTools {
             // Break the loop immediately if the skippable is enable and user enter empty character
             // - If skippable is enable, alow
             if (inputStr.isEmpty() && isSkippable) {
-                break;
+                return null;
             }
 
             // Comparing the input and the pattern
@@ -90,11 +90,11 @@ public class InputNumberTools {
      * @param verifiers: a list of extra verifiers for corner case (.e.g greater than 12, divisible by 12, etc.)
      * @return
      */
-    public static int readInteger(String prompt,
-                                  String invalidMsg,
-                                  boolean isSkippable,
-                                  String strFormat,
-                                  Function<Integer, Boolean>... verifiers) {
+    public static Integer readInteger(String prompt,
+                                      String invalidMsg,
+                                      boolean isSkippable,
+                                      String strFormat,
+                                      Function<Integer, Boolean>... verifiers) {
 
         String inputStr = "";
         int value = 0;
@@ -104,10 +104,9 @@ public class InputNumberTools {
             System.out.print("\n[!] " + prompt + ": ");
             inputStr = sc.nextLine().trim();
 
-            // Break the loop immediately if the skippable is enable and user enter empty character
-            // - If skippable is enable, alow
+            // Return null immediately if the skippable is enable and user enter empty character
             if (inputStr.isEmpty() && isSkippable) {
-                break;
+                return null;
             }
 
             // Comparing the input and the pattern

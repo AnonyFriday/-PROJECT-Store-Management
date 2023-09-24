@@ -14,9 +14,10 @@ import java.util.function.BiConsumer;
 public abstract class NumberVerifier {
 
     /**
+     * Check if the number is greater than or equals to the number
      *
      * @param value: supplied value
-     * @return true if positive than, or false
+     * @return true if greater than, or false
      */
     public final static boolean isGreaterThanEqualsTo(int value,
                                                       int marker) {
@@ -29,9 +30,10 @@ public abstract class NumberVerifier {
     }
 
     /**
+     * Check if the number is less than or equals to the number
      *
      * @param value: supplied value
-     * @return true if negative than, or false
+     * @return true if less than, or false
      */
     public final static boolean isLessThanEqualsTo(int value,
                                                    int marker) {

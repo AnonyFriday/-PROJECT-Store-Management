@@ -30,44 +30,74 @@ public abstract class Constants {
 
     // Invalid Message
     public static final String INVALID_MSG(String subject) {
-	return "Invalid " + subject + ". Please try again.";
+        return "Invalid " + subject + ". Please try again.";
     }
 
     // Duplicated Message
     public static final String DUPLICATED_MSG(String subject) {
-	return "Duplicated " + subject + ". Please try again.";
+        return "Duplicated " + subject + ". Please try again.";
     }
 
     // In format and specific Condition Message
-    public static final String MUST_IN_CONDITIONS_MSG(String... conditions) {
+    public static final String MUST_IN_CONDITIONS_MSG(
+            String... conditions) {
 
-	String str = "Only accept values that: ";
-	int L = conditions.length;
+        StringBuilder str = new StringBuilder("Only accept values that: ");
+        int L = conditions.length;
 
-	for (int i = 0; i < L; i++) {
-	    str = str.concat("\n\t* " + conditions[i] + ".");
-	}
+        for (int i = 0; i < L; i++) {
+            str = str.append("\n\t* " + conditions[i] + ".");
+        }
 
-	// If there is no condition, then return ""
-	return L > 0 ? str : "";
+        // If there is no condition, then return ""
+        return str.toString();
     }
 
     // Default Value Message
     public static final String DEFAULT_VALUE_MSG(String subject,
-	    String value) {
-	return "If undefined, value of " + subject + " will be set to " + value + ".";
+                                                 String value) {
+        return "If undefined, value of " + subject + " will be set to " + value + ".";
     }
 
     // ==================================
     // == OUTPUT DRAWING GROUP
     // ==================================
-    public static final void DRAWING_LINE_ONE_MESSAGE(String prompt) {
-	System.out.println("\n\t\t+==============================================+");
-	System.out.print("\t\t| " + prompt);
-	System.out.println("\n\t\t+==============================================+");
+    // Drawing 2 fixed size top and bottom with 1 message inside
+    public static final void DRAWING_LINE_ONE_MESSAGE(String prompt,
+                                                      int noOfDashs) {
+        // Drawing 2 edges of the table
+        StringBuilder str = new StringBuilder("=");
+        for (int i = 0; i < noOfDashs; i++) {
+            str.append("=");
+        }
+
+        System.out.println("\n\t\t+" + str.toString() + "+");
+        System.out.print("\t\t| " + prompt);
+        System.out.println("\n\t\t+" + str.toString() + "+");
     }
 
-    public static final void DRAWING_TABLE_EDGE_LINE() {
-	System.out.println("\t\t+----------------------------------------------+");
+    // Drawing 2 dynamic size top and bottom lines with content inside 
+    public static final void DRAWING_LINE_WITH_CONTENT(int noOfDashs,
+                                                       Runnable content) {
+        // Drawing 2 edges of the table
+        StringBuilder str = new StringBuilder("-");
+        for (int i = 0; i < noOfDashs; i++) {
+            str.append("-");
+        }
+
+        // Creating a table
+        System.out.println("+" + str.toString() + "+");
+        content.run();
+        System.out.println("+" + str.toString() + "+\n");
+    }
+
+    // Drawing 1 fixed size line
+    public static final void DRAWING_TABLE_EDGE_LINE(int noOfDashs) {
+        // Drawing 2 edges of the table
+        StringBuilder str = new StringBuilder("-");
+        for (int i = 0; i < noOfDashs; i++) {
+            str.append("-");
+        }
+        System.out.format("+" + str.toString() + "+%n");
     }
 }

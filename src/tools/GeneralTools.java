@@ -58,8 +58,7 @@ public abstract class GeneralTools {
      * @param invalidMsg: invalid messages
      * @return true or false based on pattern configured on the for the input string
      */
-    public static boolean readBoolean(String prompt,
-                                      StringBuilder invalidMsg) {
+    public static boolean readBoolean(String prompt, String invalidMsg) {
 
         Boolean result = null;
         do {
@@ -229,11 +228,7 @@ public abstract class GeneralTools {
      * @param isSkippable: support skipping value if enables
      * @return the date before the given date
      */
-    public static Date readDateBefore(String prompt,
-                                      StringBuilder invalidMsg,
-                                      String dateFormat,
-                                      Date markerDate,
-                                      boolean isSkippable) {
+    public static Date readDateBefore(String prompt, String invalidMsg, String dateFormat, Date markerDate, boolean isSkippable) {
 
         Date dateBefore = null;
         String inputStr = null;
@@ -272,11 +267,7 @@ public abstract class GeneralTools {
      * @param isSkippable: support skipping value if enables
      * @return the date after the given date
      */
-    public static Date readDateAfter(String prompt,
-                                     StringBuilder invalidMsg,
-                                     String dateFormat,
-                                     Date markerDate,
-                                     boolean isSkippable) {
+    public static Date readDateAfter(String prompt, String invalidMsg, String dateFormat, Date markerDate, boolean isSkippable) {
 
         Date dateAfter = null;
         String inputStr = null;
@@ -316,10 +307,7 @@ public abstract class GeneralTools {
      * @param isSkippable: determine if the user skip the input and return null to set a default value
      * @return null value if skippable or a new value
      */
-    public static String readString(String prompt,
-                                    StringBuilder invalidMsg,
-                                    String strFormat,
-                                    boolean isSkippable) {
+    public static String readString(String prompt, String invalidMsg, String strFormat, boolean isSkippable) {
 
         String inputStr = "";
         boolean isMatched = false;
@@ -345,33 +333,59 @@ public abstract class GeneralTools {
         return inputStr;
     }
 
-//    public static Double readDouble(String prompt,
-//                                    StringBuilder invalidMsg,
-//                                    boolean isSkippable,
-//                                    String strFormat,
-//                                    Function<Double, Boolean>... verifiers) {
-//
-//        String inputStr = "";
-//
-//        boolean isMatched = false;
-//        do {
-//            System.out.print("\n[!] " + prompt + ": ");
-//            inputStr = sc.nextLine().trim();
-//
-//            // Break the loop immediately if the skippable is enable and user enter empty character
-//            if (inputStr.isEmpty() && isSkippable) {
-//                break;
-//            }
-//
-//            // Comparing the input and the pattern
-//            isMatched = inputStr.matches(strFormat);
-//
-////            // Print notice msg if not matching the pattern and having invalid messages         
-////            if (!isMatched && invalidMsg.length() > 0) {
-////                System.out.println(invalidMsg);
-////            }
-//        } while (!isMatched);
-//
-//        return inputStr;
-//    }
+    public static double readDouble(String prompt, String invalidMsg, boolean isSkippable, String strFormat, Function<Double, Boolean>... verifiers) {
+
+        String inputStr = "";
+        double value = 0.0;
+        boolean isQualifiedValue = false;
+
+        do {
+            System.out.print("\n[!] " + prompt + ": ");
+            inputStr = sc.nextLine().trim();
+
+            // Break the loop immediately if the skippable is enable and user enter empty character
+            // - If skippable is enable, alow
+            if (inputStr.isEmpty() && isSkippable) {
+                break;
+            }
+
+            // Comparing the input and the pattern
+            // - Only Digits allowed
+            isQualifiedValue = inputStr.matches(strFormat);
+
+            // Converting bare string to double type
+            try {
+                value = Double.parseDouble(inputStr);
+            } catch (Exception ex) {
+                isQualifiedValue = false;
+            }
+
+            // Checking with extra verifiers for Double type
+            for (Function<Double, Boolean> verifier : verifiers) {
+                if (!verifier.apply(value)) {
+                    isQualifiedValue = false;
+                    break;
+                }
+            }
+
+            // Print notice msg if not matching the pattern and having invalid messages         
+            if (!isQualifiedValue && invalidMsg.length() > 0) {
+                System.out.println(invalidMsg);
+            }
+        } while (!isQualifiedValue);
+
+        return value;
+    }
+
+    // Testing Function
+    public static void main(String[] args) {
+        GeneralTools.readDouble("Enter your number (Enter to unchange)",
+                                Constants.MUST_IN_CONDITIONS_MSG(
+                                        "Only contains float value greater than 0",
+                                        "Press Enter to unchange value",
+                                        "e.g. 12, 1546.4"),
+                                false,
+                                "^\\d+\\.?\\d*$",
+                                (value) -> NumberVerifier.isPositive(value));
+    }
 }

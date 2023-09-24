@@ -44,23 +44,6 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
     public PurchaseReceipt(Date purchaseDate) {
         this.prID = calculatePrID();
         this.purchaseDate = purchaseDate;
-
-        this.add(new Product("VU", 12, 12,
-                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             InputDateTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
-                             "VR1111"));
-        this.add(new Product("VU", 12, 12,
-                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
-                             "VR1111"));
-        this.add(new Product("VU", 12, 12,
-                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
-                             "VR1111"));
-        this.add(new Product("VU", 12, 12,
-                             InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                             InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
-                             "VR1111"));
     }
 
     // ======================================
@@ -138,7 +121,7 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
                                                                "Cannot be null",
                                                                "Production Date is before Purchase Date",
                                                                "e.g. 12-12-2000 (dd-MM-yyyy)"),
-                                                       Constants.DATE_FORMAT, purchaseDate, false);
+                                                       Constants.DATE_FORMAT, InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT), false);
 
         // Expiration Date
         expirationDate = InputDateTools.readDateAfter("Enter Expiration Date",
@@ -146,43 +129,13 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
                                                               "Cannot be null",
                                                               "Production Date is after Purchase Date",
                                                               "e.g. 12-12-2000 (dd-MM-yyyy)"),
-                                                      Constants.DATE_FORMAT, purchaseDate, false);
+                                                      Constants.DATE_FORMAT, InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT), false);
 
         // Add this product into this Purchase Receipt
         Product product = new Product(name, purchasePrice, initialQuantity, productionDate, expirationDate, prID);
 
         // If something wrong, return false to notice the error
         return this.add(product);
-    }
-
-    // ======================================
-    // = Read Methods
-    // ======================================
-    /**
-     * Display all Products under no condition
-     *
-     * @return true if no error, otherwise false
-     */
-    public boolean displayProducts() {
-        for (Product product : this) {
-            System.out.println(product.toString());
-        }
-        return !this.isEmpty();
-    }
-
-    /**
-     * Display all Products under any condition
-     *
-     * @param verify: passing a functional interface as the condition
-     * @return true if no error, otherwise false
-     */
-    public boolean displayProducts(Function<Product, Boolean> verify) {
-        for (Product product : this) {
-            if (verify.apply(product)) {
-                System.out.println(product.toString());
-            }
-        }
-        return !this.isEmpty();
     }
 
     // ======================================
@@ -207,9 +160,12 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
 
         // Get back the product and declare its variables
         Product product = this.get(foundedIndex);
-        String name, purchasePriceStr, initialQuantityStr;
+        String name;
+        Double price;
+        Integer quantity;
 
         // Name
+        // - Unchange if user press Enter
         name = InputStringTools.readString("Update Name (Enter to unchange)",
                                            Constants.MUST_IN_CONDITIONS_MSG(
                                                    "Only contains numeric alphabets and space character",
@@ -220,27 +176,64 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
             product.setName(name);
         }
 
-        // ERROR
         // Purchase Price 
-        // - Adding extra checking on Verifier
-        purchasePriceStr = InputStringTools.readString("Enter Purchase Price (Enter to unchange)",
-                                                       Constants.MUST_IN_CONDITIONS_MSG(
-                                                               "Only contains float value greater than 0",
-                                                               "Press Enter to unchange value",
-                                                               "e.g. 12, 1546.4"),
-                                                       "^\\d+\\.?\\d*$", true);
+        // - Adding extra checking on greater than 0
+        // - Unchange if user press Enter
+        price = InputNumberTools.readDouble("Update Purchase Price (Enter to unchange)",
+                                            Constants.MUST_IN_CONDITIONS_MSG(
+                                                    "Only contains float value greater than 0",
+                                                    "e.g. 12, 1546.4"), true,
+                                            "^\\d+\\.?\\d*$",
+                                            (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 0.1));
+        if (!(price == null)) {
+            product.setPurchasePrice(price);
+        }
 
         // Initial Quantity
         // - The current quantity equals to the initial quantity automatically
-        // - Adding extra checking on Verifier
-        initialQuantityStr = InputStringTools.readString("Enter Initial Quantity (Enter to unchange)",
-                                                         Constants.MUST_IN_CONDITIONS_MSG(
-                                                                 "Only contains integral value greater than 0",
-                                                                 "Press Enter to unchange value",
-                                                                 "e.g. 20, 32, 40"),
-                                                         "^\\d+$", true);
+        // - Adding extra checking on greater than 0
+        // - Unchange if user press Enter
+        quantity = InputNumberTools.readInteger("Update Initial Quantity (Enter to unchange)",
+                                                Constants.MUST_IN_CONDITIONS_MSG(
+                                                        "Only contains integral value greater than 0",
+                                                        "e.g. 20, 32, 40"), true,
+                                                "^\\d+$",
+                                                (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 1.0));
+        if (!(quantity == null)) {
+            product.setInitialQuantity(quantity);
+        }
 
         return true;
+    }
+
+    // ======================================
+    // = Read Methods
+    // ======================================
+    /**
+     * Display all Products under no condition
+     *
+     * @return true if no error, otherwise false
+     */
+    public boolean displayProducts() {
+        for (Product product : this) {
+            product.displayProductWithFormat();
+        }
+        return !this.isEmpty();
+    }
+
+    /**
+     * Display all Products under any condition
+     *
+     * @param verify: passing a functional interface as the condition
+     * @return true if no error, otherwise false
+     */
+    public boolean displayProducts(Function<Product, Boolean> verify) {
+        for (Product product : this) {
+            if (verify.apply(product)) {
+                System.out.println(product.toString());
+            }
+        }
+        return !this.isEmpty();
     }
 
     // ======================================
@@ -256,10 +249,10 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
     ) {
         Collections.sort(this, comparator);
     }
+
     // ======================================
     // = Getters & Setters
     // ======================================
-
     public String getPrID() {
         return prID;
     }
@@ -273,34 +266,56 @@ public class PurchaseReceipt extends ArrayList<Product> implements Comparable<Pu
     }
 
     public static void main(String[] args) {
-
-        // Testing Expire Early function
         PurchaseReceipt receipt = new PurchaseReceipt(InputDateTools.parseDateFromString("22-10-2000", Constants.DATE_FORMAT));
 
-        receipt.displayProducts(new Function<Product, Boolean>() {
-            @Override
-            public Boolean apply(Product obj) {
-                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
-                int currentDay = LocalDate.now().getDayOfYear();
-                boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
-                                         ((expireDay - currentDay) >= 0);
-                return isExpiredEarly;
-            }
-        });
+        // Testing Add Function
+        receipt.add(new Product("VU", 12, 12,
+                                InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                                InputDateTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
+                                "VR1111"));
+        receipt.add(new Product("VU KIM DUY DS", 12, 12,
+                                InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                                InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                                "VR1111"));
+        receipt.add(new Product("VU", 12, 12,
+                                InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                                InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                                "VR1111"));
+        receipt.add(new Product("VU", 12, 0,
+                                InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                                InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                                "VR1111"));
 
+        // Testing Display products function
+        receipt.addProduct();
+        receipt.displayProducts();
+
+//        // Testing Expire Early function
+//        receipt.displayProducts(new Function<Product, Boolean>() {
+//            @Override
+//            public Boolean apply(Product obj) {
+//                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
+//                int currentDay = LocalDate.now().getDayOfYear();
+//                boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
+//                                         ((expireDay - currentDay) >= 0);
+//                return isExpiredEarly;
+//            }
+//        });
         // Testing Update function
         receipt.updateProduct("P000002");
 
-        receipt.displayProducts(new Function<Product, Boolean>() {
-            @Override
-            public Boolean apply(Product obj) {
-                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
-                int currentDay = LocalDate.now().getDayOfYear();
-                boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
-                                         ((expireDay - currentDay) >= 0);
-                return isExpiredEarly;
-            }
-        });
+//        receipt.displayProducts(new Function<Product, Boolean>() {
+//            @Override
+//            public Boolean apply(Product obj) {
+//                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(), Calendar.DAY_OF_YEAR);
+//                int currentDay = LocalDate.now().getDayOfYear();
+//                boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
+//                                         ((expireDay - currentDay) >= 0);
+//                return isExpiredEarly;
+//            }
+//        });
+        // Testing Display products function
+        receipt.displayProducts();
     }
 
 }

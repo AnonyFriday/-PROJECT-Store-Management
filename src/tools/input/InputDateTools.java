@@ -134,7 +134,7 @@ public class InputDateTools extends InputTools {
      * @return a date object based on the input string
      */
     public static Date readDate(String prompt,
-                                StringBuilder invalidMsg,
+                                String invalidMsg,
                                 String dateFormat,
                                 boolean isSkippable) {
 
@@ -245,5 +245,18 @@ public class InputDateTools extends InputTools {
         } while (!isValidDateAfter);
 
         return dateAfter;
+    }
+
+    /**
+     * Get the n-days Date after the current Date
+     *
+     * @param plusDays: number of days after the current date
+     * @return a string representation of date
+     */
+    public static Date getCurrentDatePlusDate(int plusDays) {
+        Date today = new Date();
+        Date datePlusDays = new Date(today.getTime() + (1000 * 60 * 60 * 24 * plusDays));
+
+        return datePlusDays;
     }
 }

@@ -170,7 +170,7 @@ public class InputDateTools extends InputTools {
      * @param dateFormat: date format
      * @param markerDate: the given date
      * @param isSkippable: support skipping value if enables
-     * @return the date before the given date
+     * @return the date before the given date or null if skippable is activated
      */
     public static Date readDateBefore(String prompt,
                                       String invalidMsg,
@@ -213,7 +213,7 @@ public class InputDateTools extends InputTools {
      * @param dateFormat: date format
      * @param markerDate: the given date
      * @param isSkippable: support skipping value if enables
-     * @return the date after the given date
+     * @return the date after the given date or null if skippable is activated
      */
     public static Date readDateAfter(String prompt,
                                      String invalidMsg,
@@ -222,7 +222,7 @@ public class InputDateTools extends InputTools {
                                      boolean isSkippable) {
 
         Date dateAfter = null;
-        String inputStr = null;
+        String inputStr = "";
         boolean isValidDateAfter = false;
 
         do {

@@ -179,7 +179,7 @@ public class InputDateTools extends InputTools {
                                       boolean isSkippable) {
 
         Date dateBefore = null;
-        String inputStr = null;
+        String inputStr = "";
         boolean isValidDateBefore = false;
 
         do {
@@ -194,7 +194,7 @@ public class InputDateTools extends InputTools {
 
             // Check if the date is not null and before the given date
             dateBefore = parseDateFromString(inputStr, dateFormat);
-            isValidDateBefore = (dateBefore != null) && dateBefore.before(dateBefore);
+            isValidDateBefore = (dateBefore != null) && dateBefore.before(markerDate);
 
             // Output the msg if the date is valid
             if (!isValidDateBefore && invalidMsg.length() > 0) {

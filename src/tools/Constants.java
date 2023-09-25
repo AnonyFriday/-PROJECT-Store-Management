@@ -62,8 +62,8 @@ public abstract class Constants {
     // ==================================
     // == OUTPUT DRAWING GROUP
     // ==================================
-    // Drawing 2 fixed size top and bottom with 1 message inside
-    public static final void DRAWING_LINE_ONE_MESSAGE(String prompt,
+    // Drawing 2 dynamic size top and bottom with 1 message inside
+    public static final void DRAWING_DYNAMIC_LINE_ONE_MESSAGE(String prompt,
                                                       int noOfDashs) {
         // Drawing 2 edges of the table
         StringBuilder str = new StringBuilder("=");
@@ -77,7 +77,7 @@ public abstract class Constants {
     }
 
     // Drawing 2 dynamic size top and bottom lines with content inside 
-    public static final void DRAWING_LINE_WITH_CONTENT(int noOfDashs,
+    public static final void DRAWING_DYNAMIC_LINE_WITH_CONTENT(int noOfDashs,
                                                        Runnable content) {
         // Drawing 2 edges of the table
         StringBuilder str = new StringBuilder("-");
@@ -92,12 +92,12 @@ public abstract class Constants {
     }
 
     // Drawing 1 fixed size line
-    public static final void DRAWING_TABLE_EDGE_LINE(int noOfDashs) {
+    public static final void DRAWING_FIXED_TABLE_EDGE_LINE(int noOfDashs) {
         // Drawing 2 edges of the table
         StringBuilder str = new StringBuilder("-");
         for (int i = 0; i < noOfDashs; i++) {
             str.append("-");
         }
-        System.out.format("+" + str.toString() + "+%n");
+        System.out.format("\t\t+" + str.toString() + "+%n");
     }
 }

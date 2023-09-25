@@ -52,7 +52,7 @@ public final class PurchaseReceiptList extends ArrayList<PurchaseReceipt> {
         boolean isAnyError = false; // Checking if import the product failed
 
         // Announcing the input of purchase receipt
-        Constants.DRAWING_LINE_ONE_MESSAGE("Enter new Purchase Receipt", 40);
+        Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("Enter new Purchase Receipt", 40);
 
         // Purchase Date
         purchaseDate = InputDateTools.readDateBefore("Enter Purchase Date (e.g. 25-09-2023)",
@@ -68,7 +68,7 @@ public final class PurchaseReceiptList extends ArrayList<PurchaseReceipt> {
         PurchaseReceipt purchaseReceipt = new PurchaseReceipt(purchaseDate);
 
         // Enter nums of products belonged to this receipt
-        Constants.DRAWING_LINE_ONE_MESSAGE("How many Products belongs to the Purchase Receipt (" + purchaseReceipt.getPrID() + ")", 60);
+        Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("How many Products belongs to the Purchase Receipt (" + purchaseReceipt.getPrID() + ")", 60);
         noProducts = InputNumberTools.readInteger("Enter number of products",
                                                   Constants.MUST_IN_CONDITIONS_MSG(
                                                           "Cannot be null",
@@ -82,7 +82,7 @@ public final class PurchaseReceiptList extends ArrayList<PurchaseReceipt> {
         for (int i = 0; i < noProducts; i++) {
 
             // Announcing the input of product
-            Constants.DRAWING_LINE_ONE_MESSAGE("Enter a new Product [" + (i + 1) + "]", 40);
+            Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("Enter a new Product [" + (i + 1) + "]", 40);
 
             // Adding product to the inventory with the foreign-key assigned
             if (!inventory.addProduct(purchaseReceipt)) {

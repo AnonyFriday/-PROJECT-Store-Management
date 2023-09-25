@@ -23,7 +23,7 @@ import util.IProductManagement;
  *
  * @author duyvu
  */
-public class ProductInventory extends ArrayList<Product> {
+public final class ProductInventory extends ArrayList<Product> {
 
     // ======================================
     // = Constructor (Singleton)
@@ -138,7 +138,7 @@ public class ProductInventory extends ArrayList<Product> {
     public boolean displayProducts(Function<Product, Boolean> verify) {
         for (Product product : this) {
             if (verify.apply(product)) {
-                System.out.println(product.toString());
+                product.displayProductWithFormat();
             }
         }
         return !this.isEmpty();
@@ -147,14 +147,22 @@ public class ProductInventory extends ArrayList<Product> {
     /**
      * Display all Products under Sorting and Specific fields
      *
+     * <br><br> Since sorting occurs, the display must be conducted on copy array;
      * @param comp: comparator used for sorting
      * @param verify: passing a functional interface as the condition
      * @return true if no error, otherwise false
      */
     public boolean displayProducts(Comparator<Product> comp,
                                    Function<Product, Boolean> verify) {
-        Collections.sort(this, comp);
 
-        return displayProducts(verify);
+        ArrayList<Product> tmp = new ArrayList<>(this);
+        Collections.sort(tmp, comp);
+
+        for (Product product : tmp) {
+            if (verify.apply(product)) {
+                product.displayProductWithFormat();
+            }
+        }
+        return !this.isEmpty();
     }
 }

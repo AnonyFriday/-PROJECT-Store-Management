@@ -14,7 +14,8 @@ public abstract class Constants {
     // ==================================
     // == FILENAME GROUP
     // ==================================
-    public static final String FILENAME = "./data/vehicle.dat";
+    public static final String FILENAME_IMPORTS = "./data/imports.dat";
+    public static final String FILENAME_PRODUCTS = "./data/products.dat";
 
     // ==================================
     // == DATE GROUP
@@ -46,7 +47,7 @@ public abstract class Constants {
         int L = conditions.length;
 
         for (int i = 0; i < L; i++) {
-            str = str.append("\n\t* " + conditions[i] + ".");
+            str = str.append("\n\t* ").append(conditions[i]).append(".");
         }
 
         // If there is no condition, then return ""
@@ -64,21 +65,21 @@ public abstract class Constants {
     // ==================================
     // Drawing 2 dynamic size top and bottom with 1 message inside
     public static final void DRAWING_DYNAMIC_LINE_ONE_MESSAGE(String prompt,
-                                                      int noOfDashs) {
+                                                              int noOfDashs) {
         // Drawing 2 edges of the table
         StringBuilder str = new StringBuilder("=");
         for (int i = 0; i < noOfDashs; i++) {
             str.append("=");
         }
 
-        System.out.println("\n\t\t+" + str.toString() + "+");
-        System.out.print("\t\t| " + prompt);
-        System.out.println("\n\t\t+" + str.toString() + "+");
+        System.out.format("%n\t\t+" + str.toString() + "+%n");
+        System.out.format("\t\t| " + prompt);
+        System.out.format("%n\t\t+" + str.toString() + "+%n");
     }
 
     // Drawing 2 dynamic size top and bottom lines with content inside 
     public static final void DRAWING_DYNAMIC_LINE_WITH_CONTENT(int noOfDashs,
-                                                       Runnable content) {
+                                                               Runnable content) {
         // Drawing 2 edges of the table
         StringBuilder str = new StringBuilder("-");
         for (int i = 0; i < noOfDashs; i++) {
@@ -86,9 +87,9 @@ public abstract class Constants {
         }
 
         // Creating a table
-        System.out.println("+" + str.toString() + "+");
+        System.out.format("%n\t\t+" + str.toString() + "+%n");
         content.run();
-        System.out.println("+" + str.toString() + "+\n");
+        System.out.format("\t\t+" + str.toString() + "+%n");
     }
 
     // Drawing 1 fixed size line

@@ -5,8 +5,11 @@
 package purchasingmng.main;
 
 import java.text.Normalizer;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.function.Function;
 import purchasingmng.product.Product;
 import purchasingmng.product.ProductInventory;
 import purchasingmng.pureceipt.PurchaseReceipt;
@@ -14,6 +17,7 @@ import purchasingmng.pureceipt.PurchaseReceiptList;
 import tools.Constants;
 import tools.input.InputBooleanTools;
 import tools.input.InputDateTools;
+import tools.input.InputStringTools;
 
 /**
  *
@@ -52,6 +56,9 @@ public class ImportMangementControls {
      */
     public void displayProductsSortingAndQuantity() {
 
+        // Drawing a line as the decoration
+        Constants.DRAWING_LINE_ONE_MESSAGE("Find products that sorted on prID and pID", 40);
+        
         Comparator<Product> cmpPrID = new Comparator<Product>() {
             @Override
             public int compare(Product o1,
@@ -76,6 +83,73 @@ public class ImportMangementControls {
         pInventory.displayProducts(cmpPrID.thenComparing(cmpPID), ((t) -> t.getCurQuantity() > 0));
     }
 
+    /**
+     * Display products are nearly expire if the expireDay is only 10 days left
+     * corresponding to the current date
+     */
+    public void displayProductsEarlyExpiryDate() {
+
+        // Drawing a line as the decoration
+        Constants.DRAWING_LINE_ONE_MESSAGE("Find products that expire in 10 days left", 40);
+        
+        // Create the finding condition on expireDay is only 10 days left
+        var isEarlyExpiryDate = new Function<Product, Boolean>() {
+            public Boolean apply(Product obj) {
+                int expireDay = InputDateTools.getDatePart(obj.getExpirationDate(),
+                                                           Calendar.DAY_OF_YEAR);
+                int currentDay = LocalDate.now().getDayOfYear();
+                boolean isExpiredEarly = ((expireDay - currentDay) <= 10) &&
+                                         ((expireDay - currentDay) >= 0);
+                return isExpiredEarly;
+            }
+        };
+
+        // Find products based on those condition
+        this.pInventory.displayProducts(isEarlyExpiryDate);
+    }
+
+    /**
+     * Display products on name and is still in active (continuous = true)
+     */
+    public void displayProductsActiveOnName() {
+
+        String name;
+
+        // Drawing a line as the decoration
+        Constants.DRAWING_LINE_ONE_MESSAGE("Find active products by product's name", 40);
+
+        // Prompting User to enter a name
+        name = InputStringTools.readString("Enter product's name",
+                                           Constants.MUST_IN_CONDITIONS_MSG(
+                                                   "Only contains numeric alphabets and space character",
+                                                   "Cannot be null",
+                                                   "e.g. Lemongrass Oil 23"),
+                                           "^[a-zA-Z0-9 ]+$", false);
+
+        // Create the finding condition on matched name and is still be active
+        var isActiveOnName = new Function<Product, Boolean>() {
+            public Boolean apply(Product obj) {
+
+                boolean isNameMatched = obj.getName().toLowerCase().contains(name.toLowerCase());
+                boolean isActive = obj.getIsContinuous();
+
+                return isNameMatched && isActive;
+            }
+        };
+
+        // Find products based on those condition
+        this.pInventory.displayProducts(isActiveOnName);
+    }
+
+    /**
+     * Display inactive products which having current quantity = 0
+     */
+    public void displayInActiveInActive() {
+        
+        // Drawing a line as the decoration
+        Constants.DRAWING_LINE_ONE_MESSAGE("Find inactive products", 40);
+    }
+    
     // ======================================
     // = Getters & Setters
     // ======================================
@@ -96,19 +170,29 @@ public class ImportMangementControls {
                                                                                         Constants.DATE_FORMAT)));
         controls.getPrList().add(new PurchaseReceipt(InputDateTools.parseDateFromString("12-12-2000",
                                                                                         Constants.DATE_FORMAT)));
-        controls.getProInventory().addProduct(new PurchaseReceipt(InputDateTools.parseDateFromString("30-01-2999",
-                                                                                                     Constants.DATE_FORMAT)));
+
         controls.getProInventory().add(new Product("VU", 12, 12,
                                                    InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
                                                    InputDateTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
                                                    "VR1113"));
+
+        controls.getProInventory().add(new Product("TRI", 12, 0,
+                                                   InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                                                   InputDateTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
+                                                   "VR1113"));
+
+        controls.getProInventory().add(new Product("TRI", 12, 1,
+                                                   InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
+                                                   InputDateTools.parseDateFromString("2-08-2023", Constants.DATE_FORMAT),
+                                                   "VR1113"));
+
         controls.getProInventory().add(new Product("VU KIM DUY DS", 12, 12,
                                                    InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                                                   InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                                                   InputDateTools.parseDateFromString("01-9-2023", Constants.DATE_FORMAT),
                                                    "VR1112"));
         controls.getProInventory().add(new Product("VU KIM DUY DS", 12, 12,
                                                    InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
-                                                   InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
+                                                   InputDateTools.parseDateFromString("02-9-2023", Constants.DATE_FORMAT),
                                                    "VR1112"));
         controls.getProInventory().add(new Product("VU KIM DUY DS", 12, 12,
                                                    InputDateTools.parseDateFromString("12-01-2000", Constants.DATE_FORMAT),
@@ -123,7 +207,14 @@ public class ImportMangementControls {
                                                    InputDateTools.parseDateFromString("30-9-2023", Constants.DATE_FORMAT),
                                                    "VR1110"));
 
-        controls.displayProductsSortingAndQuantity();
-
+        // Testing Problem 1
+//        controls.getProInventory().addProduct(new PurchaseReceipt(InputDateTools.parseDateFromString("30-01-2999",
+//                                                                                                     Constants.DATE_FORMAT)));
+        // Testing Problem 2
+//        controls.displayProductsSortingAndQuantity();
+        // Testing Problem 3
+//        controls.displayEarlyExpiryDate();
+        // Testing Problem 4
+        controls.displayProductsActiveOnName();
     }
 }

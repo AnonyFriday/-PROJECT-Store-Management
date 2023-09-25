@@ -68,6 +68,19 @@ public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
         return String.format("IM%07d", trackingID++);
     }
 
+    /**
+     * Override the toString() function to output product's fields
+     * <br><br>(Used for writing to a text file for better performance)
+     *
+     * @return a purchase receipt's representative string
+     */
+    @Override
+    public String toString() {
+        return String.format("%s,%s",
+                             prID,
+                             InputDateTools.parseStringFromDate(purchaseDate, Constants.DATE_FORMAT));
+    }
+
     // ======================================
     // = Update Methods　
     // ======================================

@@ -214,7 +214,7 @@ public final class ProductInventory extends ArrayList<Product> {
             product.setInitialQuantity(quantity);
         }
     }
-    
+
     /**
      * Update Current Quantity's attribute (On Stock) of the Product
      *
@@ -234,4 +234,20 @@ public final class ProductInventory extends ArrayList<Product> {
             product.setCurQuantity(quantity);
         }
     }
+
+    // Purchase Price 
+    // - Adding extra checking on greater than 0
+    // - Unchange if user press Enter
+    public void updatePurchasePrice(Product product) {
+        Double price = InputNumberTools.readDouble("Update Purchase Price (Enter to unchange)",
+                                                   Constants.MUST_IN_CONDITIONS_MSG(
+                                                           "Only contains float value greater than 0",
+                                                           "e.g. 12, 1546.4"), true,
+                                                   "^\\d+\\.?\\d*$",
+                                                   (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 0.1));
+        if (!(price == null)) {
+            product.setPurchasePrice(price);
+        }
+    }
+    
 }

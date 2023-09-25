@@ -53,14 +53,12 @@ public class Product implements Comparable<Product> {
         this.initialQuantity = initialQuantity;
 
         // By default, current quantity equals to initial quantity (Derived Attribute)
-        // - Does not create set function, it will automatically update based on export quantity 
-        // and initial quantity
         this.curQuantity = initialQuantity;
         this.productionDate = productionDate;
         this.expirationDate = expirationDate;
 
         // If curr quantity is 0 then discontinue the product (Derived Attribute)
-        this.continuous = this.curQuantity == 0 ? false : true;
+        this.continuous = true;
 
         this.pID = calculatePID();
         this.prID = prID;
@@ -104,42 +102,42 @@ public class Product implements Comparable<Product> {
      * @return a product-formatted representative table
      */
     public void displayProductWithFormat() {
-        Constants.DRAWING_LINE_WITH_CONTENT(77, () -> {
-                                        System.out.println(String.format(
-                                                "| Product ID    " +
-                                                "| Name              " +
-                                                "| Purchase Price " +
-                                                "| Initial Q. " +
-                                                "| Current Q. |"
-                                        ));
+        Constants.DRAWING_DYNAMIC_LINE_WITH_CONTENT(77, () -> {
+                                                System.out.println(String.format(
+                                                        "\t\t| Product ID    " +
+                                                        "| Name              " +
+                                                        "| Purchase Price " +
+                                                        "| Initial Q. " +
+                                                        "| Current Q. |"
+                                                ));
 
-                                        System.out.println(String.format("| %-13s " +
-                                                                         "| %-17s " +
-                                                                         "| %-14.2f " +
-                                                                         "| %-10d " +
-                                                                         "| %-10d |", pID, name, purchasePrice, initialQuantity,
-                                                                         curQuantity
-                                        ));
+                                                System.out.println(String.format("\t\t| %-13s " +
+                                                                                 "| %-17s " +
+                                                                                 "| %-14.2f " +
+                                                                                 "| %-10d " +
+                                                                                 "| %-10d |", pID, name, purchasePrice, initialQuantity,
+                                                                                 curQuantity
+                                                ));
 
-                                        Constants.DRAWING_TABLE_EDGE_LINE(77);
+                                                Constants.DRAWING_FIXED_TABLE_EDGE_LINE(77);
 
-                                        System.out.println(String.format(
-                                                "| Production D. " +
-                                                "| Expiry D.         " +
-                                                "| Is Con.        " +
-                                                "| Import ID  " +
-                                                "| %10s |", " "));
+                                                System.out.println(String.format(
+                                                        "\t\t| Production D. " +
+                                                        "| Expiry D.         " +
+                                                        "| Is Con.        " +
+                                                        "| Import ID  " +
+                                                        "| %10s |", " "));
 
-                                        System.out.println(String.format(
-                                                "| %-13s " +
-                                                "| %-17s " +
-                                                "| %-14b " +
-                                                "| %-10s " +
-                                                "| %10s |",
-                                                InputDateTools.parseStringFromDate(productionDate, Constants.DATE_FORMAT),
-                                                InputDateTools.parseStringFromDate(expirationDate, Constants.DATE_FORMAT),
-                                                continuous, prID, " "));
-                                    }
+                                                System.out.println(String.format(
+                                                        "\t\t| %-13s " +
+                                                        "| %-17s " +
+                                                        "| %-14b " +
+                                                        "| %-10s " +
+                                                        "| %10s |",
+                                                        InputDateTools.parseStringFromDate(productionDate, Constants.DATE_FORMAT),
+                                                        InputDateTools.parseStringFromDate(expirationDate, Constants.DATE_FORMAT),
+                                                        continuous, prID, " "));
+                                            }
         );
     }
 
@@ -192,15 +190,35 @@ public class Product implements Comparable<Product> {
         return initialQuantity;
     }
 
-    public void setInitialQuantity(int initialQuantity) {
-        this.initialQuantity = initialQuantity;
+    /**
+     * If setting import quantity (initial),
+     * then increase the stock quantity if import quantity increase
+     * or decrease the stock quantity if import quantity decrease
+     *
+     * @param updatedInitialQuantity: new value of imported quantity
+     */
+    public void setInitialQuantity(int updatedInitialQuantity) {
+        int changeInImportQuantity = updatedInitialQuantity - this.initialQuantity;
+        setCurQuantity(curQuantity + changeInImportQuantity);
+
+        this.initialQuantity = updatedInitialQuantity;
     }
 
     public int getCurQuantity() {
         return curQuantity;
     }
 
+    /**
+     * Setting the current on stock quantity
+     *
+     * <br><br>If the on stock = 0 then the product will be discontinue by default
+     *
+     * @param curQuantity : new value of current quantity
+     */
     public void setCurQuantity(int curQuantity) {
+        if (curQuantity == 0) {
+            setContinuous(false);
+        }
         this.curQuantity = curQuantity;
     }
 
@@ -225,14 +243,14 @@ public class Product implements Comparable<Product> {
     }
 
     /**
-     * The continuity depends on the current quantity
+     * The continuity depends on the current quantity, or setting on purpose
      *
-     * <br><br>If the current == 0, then the product is inactive, otherwise return true
+     * <br><br>If the current == 0, then the product is inactive (discontinue), otherwise return true
      *
-     * @param currentQuantity: current quantity of the product
+     * @param continuous: set if the product is continue on sell or not
      */
-    public void setContinuous(int currentQuantity) {
-        this.continuous = currentQuantity == 0 ? false : true;
+    public void setContinuous(boolean continuous) {
+        this.continuous = continuous;
     }
 
     public String getPrID() {

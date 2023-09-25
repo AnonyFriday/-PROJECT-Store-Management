@@ -10,6 +10,7 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import tools.Constants;
+import tools.input.InputNumberTools;
 import tools.input.InputStringTools;
 
 /**
@@ -29,21 +30,22 @@ public class MenuTools {
 
         // Drawing console top edge
         System.out.println("");
-        Constants.DRAWING_TABLE_EDGE_LINE(30);
+        Constants.DRAWING_FIXED_TABLE_EDGE_LINE(30);
 
         final int L = options.length;
         for (int i = 0; i < L; i++) {
-            System.out.println("\t\t| " + (i + 1) + "[?] " + options[i]);
+            System.out.println("\t\t| [" + (i + 1) + "] " + options[i]);
         }
 
         // Drawing console bottom edge
-        Constants.DRAWING_TABLE_EDGE_LINE(30);
+        Constants.DRAWING_FIXED_TABLE_EDGE_LINE(30);
 
         // Precheck the input option as the integer 
-        return Integer.parseInt(InputStringTools.readString("Choose (1.." + L + ")(Other Numbers to exit program)",
-                                                            Constants.INVALID_MSG("Option"),
-                                                            "^\\d+$",
-                                                            false));
+        return InputNumberTools.readInteger("Choose (1.." + L + ")(0 to exit)",
+                                            Constants.INVALID_MSG("Option"),
+                                            false,
+                                            "^\\d+$",
+                                            (value) -> value >= 0 && value <= L);
     }
 
     /**

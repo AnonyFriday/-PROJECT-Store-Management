@@ -15,8 +15,10 @@ import purchasingmng.product.ProductInventory;
 import purchasingmng.pureceipt.PurchaseReceipt;
 import purchasingmng.pureceipt.PurchaseReceiptList;
 import tools.Constants;
+import tools.NumberVerifier;
 import tools.input.InputBooleanTools;
 import tools.input.InputDateTools;
+import tools.input.InputNumberTools;
 import tools.input.InputStringTools;
 
 /**
@@ -80,7 +82,10 @@ public class ImportMangementControls {
         // 2 PrID are equals
         Comparator<Product> cmpForSort = cmpPrID.thenComparing(cmpPID);
 
-        pInventory.displayProducts(cmpPrID.thenComparing(cmpPID), ((t) -> t.getCurQuantity() > 0));
+        // Find products based on those condition
+        if (!pInventory.displayProducts(cmpPrID.thenComparing(cmpPID), ((t) -> t.getCurQuantity() > 0))) {
+            Constants.DRAWING_LINE_ONE_MESSAGE("No products found", 40);
+        }
     }
 
     /**
@@ -105,7 +110,9 @@ public class ImportMangementControls {
         };
 
         // Find products based on those condition
-        this.pInventory.displayProducts(isEarlyExpiryDate);
+        if (!this.pInventory.displayProducts(isEarlyExpiryDate)) {
+            Constants.DRAWING_LINE_ONE_MESSAGE("No products found", 40);
+        }
     }
 
     /**
@@ -138,13 +145,15 @@ public class ImportMangementControls {
         };
 
         // Find products based on those condition
-        this.pInventory.displayProducts(isActiveOnName);
+        if (!this.pInventory.displayProducts(isActiveOnName)) {
+            Constants.DRAWING_LINE_ONE_MESSAGE("No products found", 40);
+        }
     }
 
     /**
      * Display inactive products which having current quantity = 0
      */
-    public void displayInActiveInActive() {
+    public void displayProductsInActive() {
 
         // Drawing a line as the decoration
         Constants.DRAWING_LINE_ONE_MESSAGE("Find inactive products", 40);
@@ -157,7 +166,67 @@ public class ImportMangementControls {
         };
 
         // Find products based on those condition
-        this.pInventory.displayProducts(isInActive);
+        if (!this.pInventory.displayProducts(isInActive)) {
+            Constants.DRAWING_LINE_ONE_MESSAGE("No products found", 40);
+        }
+    }
+
+    /**
+     * Display products under the marker current current quantity
+     */
+    public void displayProductsWithCurrQuantityCondition() {
+
+        // Drawing a line as the decoration
+        Constants.DRAWING_LINE_ONE_MESSAGE("Find products having current on current quantity condition", 60);
+
+        // Prompting User to enter a markerCurrentQuantity
+        var markerCurrentQuantity = InputNumberTools.readInteger("Enter maximum current quantity",
+                                                             Constants.MUST_IN_CONDITIONS_MSG(
+                                                                     "Cannot be null",
+                                                                     "Only contains integral value greater than or equals to 0",
+                                                                     "e.g. 20, 32, 40"), false,
+                                                             "^\\d+$",
+                                                             (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 0.0));
+
+        var isUnderMarkerCurrQuantity = new Function<Product, Boolean>() {
+            public Boolean apply(Product obj) {
+                return obj.getCurQuantity() <= markerCurrentQuantity;
+            }
+        };
+
+        // Find products based on those condition
+        if (!this.pInventory.displayProducts(isUnderMarkerCurrQuantity)) {
+            Constants.DRAWING_LINE_ONE_MESSAGE("No products found", 40);
+        }
+    }
+
+    /**
+     * Display products under the marker current initial quantity
+     */
+    public void displayProductsWithInitQuantityCondition() {
+
+        // Drawing a line as the decoration
+        Constants.DRAWING_LINE_ONE_MESSAGE("Find products having current on initial quantity condition", 60);
+
+        // Prompting User to enter a marker InitQuantity
+        var markerInitQuantity = InputNumberTools.readInteger("Enter maximum initial quantity",
+                                                          Constants.MUST_IN_CONDITIONS_MSG(
+                                                                  "Cannot be null",
+                                                                  "Only contains integral value greater than or equals to 0",
+                                                                  "e.g. 20, 32, 40"), false,
+                                                          "^\\d+$",
+                                                          (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 0.0));
+
+        var isUnderMarkerInitQuantity = new Function<Product, Boolean>() {
+            public Boolean apply(Product obj) {
+                return obj.getInitialQuantity() <= markerInitQuantity;
+            }
+        };
+
+        // Find products based on those condition
+        if (!this.pInventory.displayProducts(isUnderMarkerInitQuantity)) {
+            Constants.DRAWING_LINE_ONE_MESSAGE("No products found", 40);
+        }
     }
 
     // ======================================
@@ -227,6 +296,10 @@ public class ImportMangementControls {
         // Testing Problem 4
 //        controls.displayProductsActiveOnName();
         // Testing Problem 5
-        controls.displayInActiveInActive();
+//        controls.displayProductsInActive();
+        // Testing Problem 6.1
+//        controls.displayProductsWithCurrQuantityCondition();
+        // Testing Problem 6.2
+        controls.displayProductsWithInitQuantityCondition();
     }
 }

@@ -58,7 +58,7 @@ public class ImportMangementControls {
 
         // Drawing a line as the decoration
         Constants.DRAWING_LINE_ONE_MESSAGE("Find products that sorted on prID and pID", 40);
-        
+
         Comparator<Product> cmpPrID = new Comparator<Product>() {
             @Override
             public int compare(Product o1,
@@ -91,7 +91,7 @@ public class ImportMangementControls {
 
         // Drawing a line as the decoration
         Constants.DRAWING_LINE_ONE_MESSAGE("Find products that expire in 10 days left", 40);
-        
+
         // Create the finding condition on expireDay is only 10 days left
         var isEarlyExpiryDate = new Function<Product, Boolean>() {
             public Boolean apply(Product obj) {
@@ -145,11 +145,21 @@ public class ImportMangementControls {
      * Display inactive products which having current quantity = 0
      */
     public void displayInActiveInActive() {
-        
+
         // Drawing a line as the decoration
         Constants.DRAWING_LINE_ONE_MESSAGE("Find inactive products", 40);
+
+        // Create the finding condition on matched name and is still be active
+        var isInActive = new Function<Product, Boolean>() {
+            public Boolean apply(Product obj) {
+                return !obj.getIsContinuous();
+            }
+        };
+
+        // Find products based on those condition
+        this.pInventory.displayProducts(isInActive);
     }
-    
+
     // ======================================
     // = Getters & Setters
     // ======================================
@@ -215,6 +225,8 @@ public class ImportMangementControls {
         // Testing Problem 3
 //        controls.displayEarlyExpiryDate();
         // Testing Problem 4
-        controls.displayProductsActiveOnName();
+//        controls.displayProductsActiveOnName();
+        // Testing Problem 5
+        controls.displayInActiveInActive();
     }
 }

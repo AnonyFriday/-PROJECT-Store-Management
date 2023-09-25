@@ -123,10 +123,12 @@ public final class ProductInventory extends ArrayList<Product> {
      * @return true if no error, otherwise false
      */
     public boolean displayProducts() {
+        boolean isHavingAny = false;
         for (Product product : this) {
             product.displayProductWithFormat();
+            isHavingAny = true;
         }
-        return !this.isEmpty();
+        return isHavingAny;
     }
 
     /**
@@ -136,18 +138,23 @@ public final class ProductInventory extends ArrayList<Product> {
      * @return true if no error, otherwise false
      */
     public boolean displayProducts(Function<Product, Boolean> verify) {
+
+        boolean isHavingAny = false;
+
         for (Product product : this) {
             if (verify.apply(product)) {
                 product.displayProductWithFormat();
+                isHavingAny = true;
             }
         }
-        return !this.isEmpty();
+        return isHavingAny;
     }
 
     /**
      * Display all Products under Sorting and Specific fields
      *
      * <br><br> Since sorting occurs, the display must be conducted on copy array;
+     *
      * @param comp: comparator used for sorting
      * @param verify: passing a functional interface as the condition
      * @return true if no error, otherwise false
@@ -164,5 +171,67 @@ public final class ProductInventory extends ArrayList<Product> {
             }
         }
         return !this.isEmpty();
+    }
+
+    // ======================================
+    // = Update Methods
+    // ======================================
+    /**
+     * Update Name's attribute of the Product
+     *
+     * @param product: product to be modified
+     */
+    public void updateName(Product product) {
+        // Name
+        // - Unchange if user press Enter
+        String name = InputStringTools.readString("Update Name (Enter to unchange)",
+                                                  Constants.MUST_IN_CONDITIONS_MSG(
+                                                          "Only contains numeric alphabets and space character",
+                                                          "Press Enter to unchange value",
+                                                          "e.g. Lemongrass Oil 23"),
+                                                  "^[a-zA-Z0-9 ]+$", true);
+        if (!name.isEmpty()) {
+            product.setName(name);
+        }
+    }
+
+    /**
+     * Update Initial Quantity's attribute of the Product
+     *
+     * @param product: product to be modified
+     */
+    public void updateInitialQuantity(Product product) {
+        // Initial Quantity
+        // - The current quantity equals to the initial quantity automatically by default
+        // - If import more products (initial q.), the on stock will be topup (current q.)
+        Integer quantity = InputNumberTools.readInteger("Update Initial Quantity (Enter to unchange)",
+                                                        Constants.MUST_IN_CONDITIONS_MSG(
+                                                                "Only contains integral value greater than 0",
+                                                                "e.g. 20, 32, 40"), true,
+                                                        "^\\d+$",
+                                                        (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 1.0));
+        if (!(quantity == null)) {
+            product.setInitialQuantity(quantity);
+        }
+    }
+    
+    /**
+     * Update Current Quantity's attribute (On Stock) of the Product
+     *
+     * @param product: product to be modified
+     */
+    public void updateCurrentQuantity(Product product) {
+        // Current Quantity
+        // - If import more products (initial q.), the on stock will be topup (current q.)
+        // - If on stock = 0 then the product's continuous will be discontinue
+        Integer quantity = InputNumberTools.readInteger("Update Current Quantity (Enter to unchange)",
+                                                        Constants.MUST_IN_CONDITIONS_MSG(
+                                                                "Only contains integral value greater than or equals to 0",
+                                                                "e.g. 20, 32, 40"), true,
+                                                        "^\\d+$",
+                                                        (value) -> NumberVerifier.isGreaterThanEqualsTo(value, 0.0));
+        if (!(quantity == null)) {
+            product.setCurQuantity(quantity);
+        }
     }
 }

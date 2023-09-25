@@ -220,7 +220,7 @@ public class Product implements Comparable<Product> {
         this.expirationDate = expirationDate;
     }
 
-    public boolean isContinuous() {
+    public boolean getIsContinuous() {
         return continuous;
     }
 

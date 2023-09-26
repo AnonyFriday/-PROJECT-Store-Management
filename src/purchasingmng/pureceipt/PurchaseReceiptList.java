@@ -52,6 +52,8 @@ public final class PurchaseReceiptList extends ArrayList<PurchaseReceipt> {
     // ======================================
     /**
      * Add new Receipt containing new imported products
+     *
+     * @return true if add successfully, otherwise false
      */
     public boolean addPurchaseReceipt() {
 	Date purchaseDate;
@@ -136,7 +138,7 @@ public final class PurchaseReceiptList extends ArrayList<PurchaseReceipt> {
 		    Date purchaseDate = InputDateTools.parseDateFromString(tokens.nextToken().trim(), Constants.DATE_FORMAT);
 
 		    // Creat new instance of Purchase Receipt and add to the interal array list
-		    PurchaseReceipt newPurchaseReceipt = new PurchaseReceipt(purchaseDate);
+		    PurchaseReceipt newPurchaseReceipt = new PurchaseReceipt(prID, purchaseDate);
 		    this.add(newPurchaseReceipt);
 		}
 	    }

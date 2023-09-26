@@ -181,6 +181,22 @@ public final class ProductInventory extends ArrayList<Product> {
 	return !this.isEmpty();
     }
 
+    /**
+     * Find a product by ID
+     *
+     * @param pID: a passed pID to the method
+     * @return null or product if has been found
+     */
+    public Product findProductById(String pID) {
+	int foundIndex = this.indexOf(new Product(pID));
+
+	// If not found then return null
+	if (foundIndex == -1) {
+	    return null;
+	}
+	return this.get(foundIndex);
+    }
+
     // ======================================
     // = Update Methods
     // ======================================

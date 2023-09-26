@@ -31,12 +31,15 @@ import tools.input.InputStringTools;
  */
 public class ImportMangementControls {
 
-    private PurchaseReceiptList prList;
+    private final PurchaseReceiptList prList;
     private final ProductInventory pInventory;
 
     // ======================================
     // = Constructor 
     // ======================================
+    /**
+     * Default Constructor
+     */
     public ImportMangementControls() {
 	prList = PurchaseReceiptList.getInstance();
 	pInventory = ProductInventory.getInstance();
@@ -249,19 +252,17 @@ public class ImportMangementControls {
 	pID = InputStringTools.readString("Enter Product's ID (P******, * is a digit)",
 		Constants.MUST_IN_CONDITIONS_MSG(
 			"Cannot be null",
-			"Only contains numeric, alphabets character",
+			"Only contains numeric characters",
 			"e.g. P000000, P123123"),
 		"^P[0-9]{6}$", false);
 
 	// Find the index of the product by providing the pID
-	int foundedIndex = this.pInventory.indexOf(new Product(pID));
+	Product product = this.pInventory.findProductById(pID);
 
 	// If not found then return immediately
-	if (foundedIndex == -1) {
+	if (product == null) {
 	    Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("Product not found", 40);
 	} else {
-	    // Get back the product and declare its variables
-	    Product product = this.pInventory.get(foundedIndex);
 
 	    // Prompting User to choose
 	    Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("Choose features to update", 60);

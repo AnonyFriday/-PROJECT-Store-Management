@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.function.Function;
-import purchasingmng.product.Product;
+import inventory.products.Product;
+import inventory.products.ProductInventory;
 import tools.Constants;
 import tools.NumberVerifier;
 import tools.input.InputDateTools;
@@ -20,8 +21,8 @@ import util.IProductManagement;
 /**
  * A purchase receipt contains purchased products (Import)
  *
- * <br><br>Since the relationship between Product(1) and PurchaseReceipt(M) is association (1 to many),
- * then this class will include the array of products
+ * <br><br>Since the relationship between Product(1) and PurchaseReceipt(M) is association (1 to many), then this class
+ * will include the array of products
  *
  * @author duyvu
  */
@@ -33,15 +34,24 @@ public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
     private Date purchaseDate;
 
     private final String prID;
-    private static int trackingID = 0;
+//    private static int trackingID = 0;
 
     // ======================================
     // = Constructor
     // ======================================   
-    // Parameterized Constructor
+    // Parameterized Constructor (No prID)
+    // - Used at Adding new PurchaseReceipt
     public PurchaseReceipt(Date purchaseDate) {
-        this.prID = calculatePrID();
-        this.purchaseDate = purchaseDate;
+	this.prID = calculatePrID();
+	this.purchaseDate = purchaseDate;
+    }
+
+    // Parameterized Constructor 
+    // - Used at Loading PurchaseReceipt from 
+    public PurchaseReceipt(String prID,
+	    Date purchaseDate) {
+	this.prID = prID;
+	this.purchaseDate = purchaseDate;
     }
 
     // ======================================
@@ -55,17 +65,22 @@ public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
      */
     @Override
     public int compareTo(PurchaseReceipt o) {
-        return o.getPrID().compareTo(this.prID);
+	return o.getPrID().compareTo(this.prID);
     }
 
     /**
      * Calculate automatically PrID
      *
+     * <br><br>Increase based on the list of Purchase Receipt to duplicated prID when loading a file
+     *
      * @return a format string IMxxxxxx of the PrID
      */
     private String calculatePrID() {
-        // Set for increment index ith
-        return String.format("IM%07d", trackingID++);
+	// Set for increment index ith
+	int purchasingReceiptsInList = PurchaseReceiptList.getInstance().size();
+
+	int trackingID = purchasingReceiptsInList;
+	return String.format("IM%07d", trackingID++);
     }
 
     /**
@@ -76,9 +91,9 @@ public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
      */
     @Override
     public String toString() {
-        return String.format("%s,%s",
-                             prID,
-                             InputDateTools.parseStringFromDate(purchaseDate, Constants.DATE_FORMAT));
+	return String.format("%s,%s",
+		prID,
+		InputDateTools.parseStringFromDate(purchaseDate, Constants.DATE_FORMAT));
     }
 
     // ======================================
@@ -167,15 +182,15 @@ public class PurchaseReceipt implements Comparable<PurchaseReceipt> {
     // = Getters & Setters
     // ======================================
     public String getPrID() {
-        return prID;
+	return prID;
     }
 
     public Date getPurchaseDate() {
-        return purchaseDate;
+	return purchaseDate;
     }
 
     public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
+	this.purchaseDate = purchaseDate;
     }
 
 //    public static void main(String[] args) {

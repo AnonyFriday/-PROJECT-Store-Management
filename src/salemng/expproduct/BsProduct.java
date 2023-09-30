@@ -45,8 +45,32 @@ public final class BsProduct {
      */
     @Override
     public String toString() {
-	return String.format("%s,%s,%f,%d",
+	return String.format("%s,%s,%.2f,%d",
 		bsID, pID, bsPrice, bsQuantity);
+    }
+
+    /**
+     * Drawing a formatted table to represent all attribute of each product
+     * <br><br>(Used for writing to a text file for better performance)
+     *
+     */
+    public void displayBsProducttWithFormat() {
+	Constants.DRAWING_DYNAMIC_LINE_WITH_CONTENT(77, () -> {
+	    System.out.println(String.format(
+		    "\t\t| Bill Of Sale ID "
+		    + "| Product ID        "
+		    + "| Selling Price     "
+		    + "| Selling Quantity  "
+	    ));
+
+	    System.out.println(String.format(
+		    "\t\t| %-13s "
+		    + "| %-17s "
+		    + "| %.2f $%-7.2s "
+		    + "| %-10d ",
+		    bsID, pID, bsPrice, " ", bsQuantity
+	    ));
+	});
     }
 
     // ======================================

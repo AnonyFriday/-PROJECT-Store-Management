@@ -54,6 +54,8 @@ public final class BillOfSaleList extends ArrayList<BillOfSale> {
     // ======================================
     /**
      * Add new Export Receipt (BOS) containing exported products
+     *
+     * @return true if adding successfully, otherwise return false
      */
     public boolean addbillOfSale() {
 	int noProducts;
@@ -91,6 +93,12 @@ public final class BillOfSaleList extends ArrayList<BillOfSale> {
 		    "^P\\d{6}$", false);
 
 	    Product product = inventory.findProductById(pID);
+
+	    // If not found the product, continue until ending the loop
+	    if (product == null) {
+		Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("Not found Product with ID (" + pID + ")", 40);
+		continue;
+	    }
 
 	    // Adding product to the inventory with the foreign-key assigned
 	    if (product != null && product.getIsContinuous()) {
@@ -168,5 +176,5 @@ public final class BillOfSaleList extends ArrayList<BillOfSale> {
 	    }
 	}
     }
-    
+
 }

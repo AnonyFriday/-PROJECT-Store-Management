@@ -27,7 +27,7 @@ import tools.input.InputBooleanTools;
  * @author duyvu
  *
  */
-public class FileTools {
+public abstract class FileTools {
 
     /**
      * Write objects to the text-based file
@@ -36,7 +36,7 @@ public class FileTools {
      * @param filename
      * @param objects
      */
-    public static <T> void writeObjectsToTextFile(String filename,
+    public static <T> void writeObjectsToTextFile(String fileName,
                                                   Collection<T> objects) {
         // Reading file stream
         FileWriter fileWriter = null;
@@ -45,11 +45,11 @@ public class FileTools {
         PrintWriter printWriter = null;
 
         // File to save with overriden mode
-        // vehicle.dat -> vehicleModified.dat
-        filename = isSaveAtNewFile(filename);
+        // vehicle.dat -> vehicleCopied.dat
+        fileName = isSaveAtNewFile(fileName);
 
         try {
-            fileWriter = new FileWriter(filename);
+            fileWriter = new FileWriter(fileName);
             printWriter = new PrintWriter(fileWriter);
 
             // Iterating the list and send the the writer stream
@@ -64,7 +64,6 @@ public class FileTools {
 
             // Exit and printout if file is not 
             System.err.println(ex);
-
             Constants.DRAWING_DYNAMIC_LINE_ONE_MESSAGE("File not found. Please try again", 50);
 
         } catch (IOException ex) {
@@ -100,7 +99,7 @@ public class FileTools {
 
         if (isSaveAtNewFile) {
             // vehicle.dat -> vehicleCopied.dat
-            String regex = "^(\\w+)(\\.(dat|txt))$";
+            String regex = "(\\w+)(\\.(dat|txt))$";
             String replacementFile = "$1Copied$2";
 
             Pattern p = Pattern.compile(regex);
@@ -110,6 +109,8 @@ public class FileTools {
         }
         return fileName;
     }
+
+    
 }
 
 //    public void loadVehiclesFromFile(String filename) {

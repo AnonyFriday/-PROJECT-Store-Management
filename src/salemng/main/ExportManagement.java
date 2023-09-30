@@ -4,6 +4,8 @@
  */
 package salemng.main;
 
+import purchasingmng.main.ImportManagement;
+import purchasingmng.main.ImportMangementControls;
 import tools.MenuTools;
 
 /**
@@ -13,14 +15,16 @@ import tools.MenuTools;
 public class ExportManagement {
 
     public static void main(String[] args) {
-	ExportMangementControls controls = new ExportMangementControls();
+	ImportMangementControls importControlss = new ImportMangementControls();
+	ExportMangementControls exportControls = new ExportMangementControls();
 
 	// A variable determince the user's choice and program's execution
 	int userChoice;
 	boolean isExitedProgram = false;
 
 	// Load file at first for the application
-	controls.loadBOSandBSProductFromFile();
+	importControlss.loadProductsAndImportFromFile();
+	exportControls.loadBOSandBSProductFromFile();
 
 	do {
 	    // Generate the Menu options
@@ -39,22 +43,20 @@ public class ExportManagement {
 
 		// Adding PurchasingReceipt with Products
 		case 1: {
-		    controls.addBillOfSaleReceiptWithSellingProducts();
-
-		    // Ask user to continue adding to the list
-		    MenuTools.continueOption(() -> controls.addBillOfSaleReceiptWithSellingProducts(),
-			    "Do you want to continue ADDING new Import Receipt (Y/N)");
+		    exportControls.addBillOfSaleReceiptWithSellingProducts();
 		    break;
 		}
 
 		// Display products in inventory
 		case 2: {
-		    controls.displaySellingProducts();
+		    exportControls.displaySellingProducts();
 		    break;
 		}
+
+		// Save BOs and BsProducts to File
 		case 3: {
-		    controls.saveBOSsToFile();
-		    controls.saveBsProductsToFile();
+		    exportControls.saveBOSsToFile();
+		    exportControls.saveBsProductsToFile();
 		    break;
 		}
 		default: {

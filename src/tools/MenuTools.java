@@ -28,24 +28,24 @@ public class MenuTools {
     // TODO: Replace by readingInteger
     public static int getChoiceInt(String... options) {
 
-        // Drawing console top edge
-        System.out.println("");
-        Constants.DRAWING_FIXED_TABLE_EDGE_LINE(30);
+	// Drawing console top edge
+	System.out.println("");
+	Constants.DRAWING_FIXED_TABLE_EDGE_LINE(50);
 
-        final int L = options.length;
-        for (int i = 0; i < L; i++) {
-            System.out.println("\t\t| [" + (i + 1) + "] " + options[i]);
-        }
+	final int L = options.length;
+	for (int i = 0; i < L; i++) {
+	    System.out.println("\t\t| [" + (i + 1) + "] " + options[i]);
+	}
 
-        // Drawing console bottom edge
-        Constants.DRAWING_FIXED_TABLE_EDGE_LINE(30);
+	// Drawing console bottom edge
+	Constants.DRAWING_FIXED_TABLE_EDGE_LINE(50);
 
-        // Precheck the input option as the integer 
-        return InputNumberTools.readInteger("Choose (1.." + L + ")(0 to exit)",
-                                            Constants.INVALID_MSG("Option"),
-                                            false,
-                                            "^\\d+$",
-                                            (value) -> value >= 0 && value <= L);
+	// Precheck the input option as the integer 
+	return InputNumberTools.readInteger("Choose (1.." + L + ")(0 to exit)",
+		Constants.INVALID_MSG("Option"),
+		false,
+		"^\\d+$",
+		(value) -> value >= 0 && value <= L);
     }
 
     /**
@@ -55,13 +55,13 @@ public class MenuTools {
      * @return an object chosen by the user
      */
     public static Object getChoiceObject(List list) {
-        int choice = 0;
-        final int L = list.size();
-        for (int i = 0; i < L; i++) {
-            System.out.println("\t\t| " + (i + 1) + "[?] " + list.get(i).toString()
-            );
-        }
-        return (choice > 0 && choice <= L) ? list.get(choice - 1) : null;
+	int choice = 0;
+	final int L = list.size();
+	for (int i = 0; i < L; i++) {
+	    System.out.println("\t\t| " + (i + 1) + "[?] " + list.get(i).toString()
+	    );
+	}
+	return (choice > 0 && choice <= L) ? list.get(choice - 1) : null;
     }
 
     /**
@@ -71,16 +71,16 @@ public class MenuTools {
      * @param prompt: a prompt to continue the function
      */
     public static void continueOption(Runnable continueFunction,
-                                      String prompt) {
+	    String prompt) {
 
-        // Assign a list of valid error message if user input the wrong type of boolean
-        String invalidBooleanMsg = Constants.MUST_IN_CONDITIONS_MSG("Only accept boolean value (1, 0, f, t, y, n, true, false, yes, no)");
+	// Assign a list of valid error message if user input the wrong type of boolean
+	String invalidBooleanMsg = Constants.MUST_IN_CONDITIONS_MSG("Only accept boolean value (1, 0, f, t, y, n, true, false, yes, no)");
 
-        // If true, then continue the function by applying the Functional Interface
-        boolean isContinued = InputBooleanTools.readBoolean(prompt, invalidBooleanMsg);
-        while (isContinued) {
-            continueFunction.run();
-            isContinued = InputBooleanTools.readBoolean(prompt, invalidBooleanMsg);
-        }
+	// If true, then continue the function by applying the Functional Interface
+	boolean isContinued = InputBooleanTools.readBoolean(prompt, invalidBooleanMsg);
+	while (isContinued) {
+	    continueFunction.run();
+	    isContinued = InputBooleanTools.readBoolean(prompt, invalidBooleanMsg);
+	}
     }
 }

@@ -95,7 +95,7 @@ public class BsProductList extends ArrayList<BsProduct> {
      */
     public void displaySellingProducts() {
 	for (BsProduct bsProduct : this) {
-	    bsProduct.toString();
+	    bsProduct.displayBsProducttWithFormat();
 	}
     }
 
